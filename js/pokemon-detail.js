@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const id = parseInt(pokemonId, 10);
 
-    if (id < 1 || id > MAX_POKEMON) {
+    if (id < 0 || id > MAX_POKEMON) {
         window.location.href = '/index.html';
         return; //prevent further code execution
     }
