@@ -25,25 +25,31 @@ fetch(`${POKEMON_API}?limit=${MAX_POKEMON}`)
 
 
 /**
- * 
- * @param {*} id 
+ * Fetch Pokémon data before redirecting to the details page
+ * @param {number} id - Pokémon ID
+ * @returns {Object|null} - Pokémon data if fetched successfully, null otherwise
  */
 async function fetchPokemonDataBeforeRedirect(id) {
     try {
-        const [pokemonData, pokemonSpecies] = await Promise.all([
-            fetch(`${POKEMON_API}${id}`).then(response => response.json()),
-            fetch(`${POKEMON_SPECIES_API}${id}`).then(response => response.json()),
+        const responses = await Promise.all([
+            fetch(`${POKEMON_API}${id}`),
+            fetch(`${POKEMON_SPECIES_API}${id}`)
         ]);
-        return {
-            pokemonData,
-            pokemonSpecies,
-        };
+
+        if (!responses[0].ok || !responses[1].ok) {
+            throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
+        }
+
+        const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
+
+        return { pokemonData, pokemonSpecies };
 
     } catch (error) {
-        console.log(error + 'Failed to fetch Pokemon before redirect');
+        console.error(`Failed to fetch Pokémon before redirect: ${error.message}`);
         return null;
     }
 }
+
 
 // async function fetchPokemonData(id) {
 //     try {
