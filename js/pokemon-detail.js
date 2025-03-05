@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (id < 1 || id > MAX_POKEMON) {
         window.location.href = '/index.html';
+        return; //prevent further code execution
     }
 
     currentPokemonId = id;
