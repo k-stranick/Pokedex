@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadPokemonData(id) {
 
-
     try {
         const responses = await Promise.all([
             fetch(`${POKEMON_API}${id}`),
@@ -59,7 +58,7 @@ async function loadPokemonData(id) {
             });
         }
 
-        window.history.pushState({}, "", `pages/pokemon-detail.html?id=${id}`);
+        window.history.pushState({}, "", `pages/pokemon-detail.html?pokemonId=${id}`);
         return { pokemonData, pokemonSpecies };
 
     } catch (error) {
