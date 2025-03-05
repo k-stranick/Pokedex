@@ -4,6 +4,7 @@ const searchInput = document.querySelector('#search-input');
 const numberFilter = document.querySelector('#number');
 const nameFilter = document.querySelector('#name');
 const notFoundMessage = document.querySelector('#not-found-message');
+
 let allPokemon = []; // Array to store all Pokemon
 
 
@@ -129,4 +130,14 @@ function handleSearch() {
     displayPokemon(filteredPokemon);
 
     notFoundMessage.style.display = filteredPokemon.length === 0 ? 'block' : 'none';
+
+
+}
+
+const clearButton = document.querySelector('#search-clear-icon');
+clearButton.addEventListener('click', clearSearch); // Clear search input
+function clearSearch() {
+    searchInput.value = '';
+    displayPokemon(allPokemon);
+    notFoundMessage.style.display = 'none';
 }
