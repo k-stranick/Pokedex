@@ -1,4 +1,4 @@
-# PokeDex
+# UNOFFICIAL Pokedex
 Project for school on how to utilize webAPIs. I will be creating a Pokedex for this assignment
 
 Assignment: Module 6 - Fetch Web API - DueMar 23, 2025 11:59 PM
