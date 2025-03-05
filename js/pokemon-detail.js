@@ -4,7 +4,7 @@ const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/';
 
 document.addEventListener('DOMContentLoaded', () => {
     const MAX_POKEMON = 1051;
-    const pokemonId = new URLSearchParams(window.location.search).get('id');
+    const pokemonId = new URLSearchParams(window.location.search).get('pokemonId');
 
     const id = parseInt(pokemonId, 10);
 
