@@ -1,4 +1,6 @@
 let currentPokemonId = null;
+const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
+const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/';
 
 document.addEventListener('DOMContentLoaded', () => {
     const MAX_POKEMON = 1051;
@@ -17,8 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadPokemonData(id) {
-    const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
-    const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/';
+
 
     try {
         const responses = await Promise.all([
