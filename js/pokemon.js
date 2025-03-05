@@ -13,6 +13,7 @@ const searchButton = document.querySelector('#search-button');
 const detailWrapper = document.querySelector('.detail-wrapper');
 
 const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
+const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/';
 
 fetch(`${POKEMON_API}?limit=${MAX_POKEMON}`)
     .then(response => response.json())
@@ -31,7 +32,7 @@ async function fetchPokemonDataBeforeRedirect(id) {
     try {
         const [pokemonData, pokemonSpecies] = await Promise.all([
             fetch(`${POKEMON_API}${id}`).then(response => response.json()),
-            fetch(`${POKEMON_API}species/${id}`).then(response => response.json()),
+            fetch(`${POKEMON_SPECIES_API}${id}`).then(response => response.json()),
         ]);
         return {
             pokemonData,
@@ -96,7 +97,7 @@ async function displayPokemon(pokemon) {
         listItem.addEventListener('click', async () => {
             const isFetched = await fetchPokemonDataBeforeRedirect(pokemonId);
             if (isFetched) {
-                window.location.href = `./pokemon-detail.html?pokemonId=${pokemonId}`;
+                window.location.href = `/pages/pokemon-details.html?pokemonId=${pokemonId}`;
             }
         });
         listWrapper.appendChild(listItem);
