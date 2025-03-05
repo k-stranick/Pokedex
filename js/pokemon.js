@@ -32,10 +32,14 @@ async function fetchPokemonDataBeforeRedirect(id) {
             fetch(`${POKEMON_API}${id}`).then(response => response.json()),
             fetch(`${POKEMON_API}species/${id}`).then(response => response.json()),
         ]);
-        return true;
+        return {
+            pokemonData,
+            pokemonSpecies,
+        };
 
     } catch (error) {
         console.log(error + 'Failed to fetch Pokemon before redirect');
+        return null;
     }
 }
 
