@@ -39,6 +39,22 @@ async function fetchPokemonDataBeforeRedirect(id) {
     }
 }
 
+// async function fetchPokemonData(id) {
+//     try {
+//         const responses = await Promise.all([
+//             fetch(`${POKEMON_API}${id}`).then(response => response.json()),
+//             fetch(`${POKEMON_API}species/${id}`).then(response => response.json()),
+//         ]);
+//         return {
+//             pokemonData: responses[0],
+//             pokemonSpecies: responses[1],
+//         };
+//     } catch (error) {
+//         console.error(`Failed to fetch Pokémon data: ${error}`);
+//         return null;
+//     }
+// }
+
 // /**
 //  * 
 //  * @param {*} pokemonList 
@@ -65,7 +81,7 @@ async function displayPokemon(pokemon) {
             <p class="caption-fonts">#${pokemonId}</p>
         </div>      
         <div class='img-wrap'>
-            <img src="https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png" alt="${pokemon.name} />
+            <img src="https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png" alt="${pokemon.name}" />
         </div>
         <div class='name-wrap'>
             <p class="body3-fonts">#${pokemon.name}</p>
@@ -89,6 +105,11 @@ searchInput.addEventListener("keyup", handleSearch);
 function handleSearch() {
     const searchValue = searchInput.value.toLowerCase().trim();
     let filteredPokemon;
+
+    if (!searchValue) {
+        displayPokemon(allPokemon);
+        return;
+    }
 
     if (numberFilter.checked) {
         filteredPokemon = allPokemon.filter(pokemon => {
