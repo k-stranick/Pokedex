@@ -1,16 +1,16 @@
 let currentPokemonId = null;
-const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
-const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/';
+const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon';
+const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species'; //1051 total pokemon
 
 document.addEventListener('DOMContentLoaded', () => {
-    const MAX_POKEMON = 1051;
-    const pokemonId = new URLSearchParams(window.location.search).get('pokemonId'); // fixed was passing id when i needed the full name 
+    const MAX_POKEMON = 151;
+    const pokemonId = new URLSearchParams(window.location.search).get('id'); // fixed was passing id when i needed the full name pokemonI
 
     const id = parseInt(pokemonId, 10);
 
     if (id < 1 || id > MAX_POKEMON) {
-        window.location.href = '/index.html';
-        return; //prevent further code execution
+        return (window.location.href = '/index.html');
+        //return; //prevent further code execution
     }
 
     currentPokemonId = id;
@@ -20,53 +20,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadPokemonData(id) {
 
+
     try {
-        const responses = await Promise.all([
-            fetch(`${POKEMON_API}${id}`),
-            fetch(`${POKEMON_SPECIES_API}${id}`)
+        // const responses = await Promise.all([
+        //     fetch(`${POKEMON_API}${id}`),
+        //     fetch(`${POKEMON_SPECIES_API}${id}`)
+        // ]);
+
+        // if (!responses[0].ok || !responses[1].ok) {
+        //     throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
+        // }
+
+        // const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
+
+
+
+        const [pokemon, pokemonSpecies] = await Promise.all([
+            fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
+
+            fetch(`${POKEMON_SPECIES_API}/${id}`).then(response => response.json())
         ]);
 
-        if (!responses[0].ok || !responses[1].ok) {
-            throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
-        }
 
-        const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
+
         const abilityWrapper = document.querySelector(".pokemon-detail-wrap .pokemon-detail.move");
 
         abilityWrapper.innerHTML = '';
 
         if (currentPokemonId === id) {
-            displayPokemonDetails(pokemonData);
+            displayPokemonDetails(pokemon);
             const flavorText = getEnglishFlavorText(pokemonSpecies);
-            document.querySelector('.body3-fonts.pokemon-description').textContent = flavorText;
-        };
+            document.querySelector(".body3-fonts.pokemon-description").textContent = flavorText;
 
-        const [leftArrow, rightArrow] = ["#leftArrow", "#rightArrow"].map((sel) =>
-            document.querySelector(sel)
-        );
-        leftArrow.removeEventListener("click", navigatePokemon);
-        rightArrow.removeEventListener("click", navigatePokemon);
 
-        if (id !== 1) {
-            leftArrow.addEventListener("click", () => {
-                navigatePokemon(id - 1);
-            });
+            const [leftArrow, rightArrow] = ["#leftArrow", "#rightArrow"].map((sel) =>
+                document.querySelector(sel)
+            );
+            leftArrow.removeEventListener("click", navigatePokemon);
+            rightArrow.removeEventListener("click", navigatePokemon);
+
+            if (id !== 1) {
+                leftArrow.addEventListener("click", () => {
+                    navigatePokemon(id - 1);
+                });
+            }
+            if (id !== 151) {
+                rightArrow.addEventListener("click", () => {
+                    navigatePokemon(id + 1);
+                });
+            }
+
+            //pushes the history of changes to the url without reloading the page 
+            window.history.pushState({}, "", `/pages/pokemon-details.html?id=${id}`);
         }
-        if (id !== 1051) {
-            rightArrow.addEventListener("click", () => {
-                navigatePokemon(id + 1);
-            });
-        }
 
-        //pushes the history of changes to the url without reloading the page 
-        window.history.pushState({}, "", `/pages/pokemon-detail.html?pokemonId=${id}`);
-
-
-        return { pokemonData, pokemonSpecies };
+        return true;
 
     } catch (error) {
-        console.error(`Failed to fetch Pokémon before redirect: ${error.message}`);
-        return null;
+        console.error(`Failed to fetch Pokémon data: ${error}`);
+        return false;
     }
 }
 
@@ -75,6 +87,8 @@ async function navigatePokemon(id) {
     currentPokemonId = id;
     await loadPokemonData(id);
 }
+
+
 
 const typeColors = {
     normal: "#A8A878",
@@ -119,7 +133,7 @@ function setTypeBackgroundColor(pokemon) {
     const color = typeColors[mainType];
 
     if (!color) {
-        console.warn(`color notdefined for type: ${mainType}`);
+        console.warn(`color not defined for type: ${mainType}`);
         return;
     }
 
@@ -235,4 +249,26 @@ function getEnglishFlavorText(pokemonSpecies) {
         }
     }
     return '';
+}
+
+function throttle(func, limit) {
+    let lastFunc;
+    let lastRan;
+
+    return function () {
+        const context = this;
+        const args = arguments;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function () {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    };
 }

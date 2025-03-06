@@ -1,4 +1,4 @@
-const MAX_POKEMON = 1051; // Number of Pokemon in the first generation (increase after working with the first generation)
+const MAX_POKEMON = 151; // Number of Pokemon in the first generation (increase after working with the first generation)
 const listWrapper = document.querySelector('.list-wrapper');
 const searchInput = document.querySelector('#search-input');
 const numberFilter = document.querySelector('#number');
@@ -8,12 +8,13 @@ const notFoundMessage = document.querySelector('#not-found-message');
 let allPokemon = []; // Array to store all Pokemon
 
 
-const typeFilter = document.querySelector('#type-filter');
-const searchButton = document.querySelector('#search-button');
-const detailWrapper = document.querySelector('.detail-wrapper');
+// const typeFilter = document.querySelector('#type-filter');
+// const searchButton = document.querySelector('#search-button');
+// const detailWrapper = document.querySelector('.detail-wrapper');
 
-const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
-const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/';
+const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon';
+const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species';
+const POKEMON_IMAGE_API = '"https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork';
 
 fetch(`${POKEMON_API}?limit=${MAX_POKEMON}`)
     .then(response => response.json())
@@ -30,23 +31,34 @@ fetch(`${POKEMON_API}?limit=${MAX_POKEMON}`)
  * @returns {Object|null} - Pokémon data if fetched successfully, null otherwise
  */
 async function fetchPokemonDataBeforeRedirect(id) {
+    // try {
+    //     const responses = await Promise.all([
+    //         fetch(`${POKEMON_API}${id}`),
+    //         fetch(`${POKEMON_SPECIES_API}${id}`)
+    //     ]);
+
+    //     if (!responses[0].ok || !responses[1].ok) {
+    //         throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
+    //     }
+
+    //     const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
+
+    //     return { pokemonData, pokemonSpecies };
+
+    // } catch (error) {
+    //     console.error(`Failed to fetch Pokémon before redirect: ${error.message}`);
+    //     return null;
+    // }
+
     try {
-        const responses = await Promise.all([
-            fetch(`${POKEMON_API}${id}`),
-            fetch(`${POKEMON_SPECIES_API}${id}`)
+        const [pokemon, pokemonSpecies] = await Promise.all([
+            fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
+
+            fetch(`${POKEMON_SPECIES_API}/${id}`).then(response => response.json())
         ]);
-
-        if (!responses[0].ok || !responses[1].ok) {
-            throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
-        }
-
-        const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
-
-        return { pokemonData, pokemonSpecies };
-
+        return true;
     } catch (error) {
-        console.error(`Failed to fetch Pokémon before redirect: ${error.message}`);
-        return null;
+        console.error(`Failed to fetch Pokémon data: ${error}`);;
     }
 }
 
@@ -93,7 +105,7 @@ async function displayPokemon(pokemon) {
             <p class="caption-fonts">#${pokemonId}</p>
         </div>      
         <div class='img-wrap'>
-            <img src="https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png" alt="${pokemon.name}" />
+            <img src=${POKEMON_IMAGE_API}/${pokemonId}.png" alt="${pokemon.name}" />
         </div>
         <div class='name-wrap'>
             <p class="body3-fonts">#${pokemon.name}</p>
@@ -103,7 +115,7 @@ async function displayPokemon(pokemon) {
         listItem.addEventListener('click', async () => {
             const isFetched = await fetchPokemonDataBeforeRedirect(pokemonId);
             if (isFetched) {
-                window.location.href = `pages/pokemon-details.html?pokemonId=${pokemonId}`;
+                window.location.href = `pages/pokemon-details.html?id=${pokemonId}`;
             }
         });
         listWrapper.appendChild(listItem);
