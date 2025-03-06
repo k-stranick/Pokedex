@@ -22,24 +22,24 @@ async function loadPokemonData(id) {
 
 
     try {
-        // const responses = await Promise.all([
-        //     fetch(`${POKEMON_API}${id}`),
-        //     fetch(`${POKEMON_SPECIES_API}${id}`)
-        // ]);
-
-        // if (!responses[0].ok || !responses[1].ok) {
-        //     throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
-        // }
-
-        // const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
-
-
-
-        const [pokemon, pokemonSpecies] = await Promise.all([
-            fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
-
-            fetch(`${POKEMON_SPECIES_API}/${id}`).then(response => response.json())
+        const responses = await Promise.all([
+            fetch(`${POKEMON_API}/${id}`),
+            fetch(`${POKEMON_SPECIES_API}/${id}`)
         ]);
+
+        if (!responses[0].ok || !responses[1].ok) {
+            throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
+        }
+
+        const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
+
+
+
+        // const [pokemon, pokemonSpecies] = await Promise.all([
+        //     fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
+
+        //     fetch(`${POKEMON_SPECIES_API}/${id}`).then(response => response.json())
+        // ]);
 
 
 
@@ -48,7 +48,7 @@ async function loadPokemonData(id) {
         abilityWrapper.innerHTML = '';
 
         if (currentPokemonId === id) {
-            displayPokemonDetails(pokemon);
+            displayPokemonDetails(pokemonData);
             const flavorText = getEnglishFlavorText(pokemonSpecies);
             document.querySelector(".body3-fonts.pokemon-description").textContent = flavorText;
 
@@ -74,11 +74,13 @@ async function loadPokemonData(id) {
             window.history.pushState({}, "", `/pages/pokemon-details.html?id=${id}`);
         }
 
-        return true;
+        // return true;
+        return { pokemonData, pokemonSpecies };
 
     } catch (error) {
-        console.error(`Failed to fetch Pokémon data: ${error}`);
-        return false;
+        console.error("Failed to fetch Pokémon data:", error);
+        // return false;
+        return null; // maybe something else?? 
     }
 }
 
