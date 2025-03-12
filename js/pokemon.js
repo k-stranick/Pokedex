@@ -1,4 +1,4 @@
-const MAX_POKEMON = 151; // Number of Pokemon in the first generation (increase after working with the first generation)
+const MAX_POKEMON = 1051; // Number of Pokemon in the first generation (increase after working with the first generation)
 const listWrapper = document.querySelector('.list-wrapper');
 const searchInput = document.querySelector('#search-input');
 const numberFilter = document.querySelector('#number');
@@ -25,59 +25,59 @@ fetch(`${POKEMON_API}?limit=${MAX_POKEMON}`)
 
 
 
-/**
- * Fetch Pokémon data before redirecting to the details page
- * @param {number} id - Pokémon ID
- * @returns {Object|null} - Pokémon data if fetched successfully, null otherwise
- */
-async function fetchPokemonDataBeforeRedirect(id) {
-    // try {
-    //     const responses = await Promise.all([
-    //         fetch(`${POKEMON_API}${id}`),
-    //         fetch(`${POKEMON_SPECIES_API}${id}`)
-    //     ]);
+// /**
+//  * Fetch Pokémon data before redirecting to the details page
+//  * @param {number} id - Pokémon ID
+//  * @returns {Object|null} - Pokémon data if fetched successfully, null otherwise
+//  */
+// async function fetchPokemonDataBeforeRedirect(id) {
+//     //     try {
+//     //         const responses = await Promise.all([
+//     //             fetch(`${POKEMON_API}${id}`),
+//     //             fetch(`${POKEMON_SPECIES_API}${id}`)
+//     //         ]);
 
-    //     if (!responses[0].ok || !responses[1].ok) {
-    //         throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
-    //     }
+//     //         if (!responses[0].ok || !responses[1].ok) {
+//     //             throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
+//     //         }
 
-    //     const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
+//     //         const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
 
-    //     return { pokemonData, pokemonSpecies };
+//     //         return { pokemonData, pokemonSpecies };
 
-    // } catch (error) {
-    //     console.error(`Failed to fetch Pokémon before redirect: ${error.message}`);
-    //     return null;
-    // }
+//     //     } catch (error) {
+//     //         console.error(`Failed to fetch Pokémon before redirect: ${error.message}`);
+//     //         return null;
+//     //     }
 
-    try {
-        const [pokemon, pokemonSpecies] = await Promise.all([
-            fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
-
-            fetch(`${POKEMON_SPECIES_API}/${id}`).then(response => response.json())
-        ]);
-        return true;
-    } catch (error) {
-        console.error(`Failed to fetch Pokémon data: ${error}`);;
-    }
-}
-
-
-// async function fetchPokemonData(id) {
 //     try {
-//         const responses = await Promise.all([
-//             fetch(`${POKEMON_API}${id}`).then(response => response.json()),
-//             fetch(`${POKEMON_API}species/${id}`).then(response => response.json()),
+//         const [pokemon, pokemonSpecies] = await Promise.all([
+//             fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
+
+//             fetch(`${POKEMON_SPECIES_API}/${id}`).then(response => response.json())
 //         ]);
-//         return {
-//             pokemonData: responses[0],
-//             pokemonSpecies: responses[1],
-//         };
+//         return true;
 //     } catch (error) {
-//         console.error(`Failed to fetch Pokémon data: ${error}`);
-//         return null;
+//         console.error(`Failed to fetch Pokémon data: ${error}`);;
 //     }
 // }
+
+
+async function fetchPokemonDataBeforeRedirect(id) {
+    try {
+        const responses = await Promise.all([
+            fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
+            fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
+        ]);
+        return {
+            pokemonData: responses[0],
+            pokemonSpecies: responses[1],
+        };
+    } catch (error) {
+        console.error(`Failed to fetch Pokémon data: ${error}`);
+        return null;
+    }
+}
 
 // /**
 //  * 
@@ -108,7 +108,7 @@ async function displayPokemon(pokemon) {
             <img src=${POKEMON_IMAGE_API}/${pokemonId}.png" alt="${pokemon.name}" />
         </div>
         <div class='name-wrap'>
-            <p class="body3-fonts">#${pokemon.name}</p>
+            <p class="body3-fonts">${pokemon.name}</p>
         </div> 
         `;
 
