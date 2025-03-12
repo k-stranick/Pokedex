@@ -265,7 +265,7 @@ async function navigatePokemon(newId) {
 
 
 function updateHistoryUrl(id) {
-    window.history.pushState({}, "", `./pages/pokemon-details.html?id=${id}`);
+    window.history.pushState({}, "", `Pokedex/pages/pokemon-details.html?id=${id}`);
 }
 
 
