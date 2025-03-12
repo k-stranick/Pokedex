@@ -1,3 +1,5 @@
+//pokemon-details.js
+
 const qs = (selector, parent = document) => parent.querySelector(selector);
 const qsa = (selector, parent = document) => parent.querySelectorAll(selector);
 
@@ -27,7 +29,7 @@ const typeColors = {
     dragon: '#7038F8',
     dark: '#705848',
     steel: '#B8B8D0',
-    // dark: '#EE99AC'
+    fairy: '#EE99AC'
 };
 
 
@@ -263,7 +265,7 @@ async function navigatePokemon(newId) {
 
 
 function updateHistoryUrl(id) {
-    window.history.pushState({}, "", `/pages/pokemon-details.html?id=${id}`);
+    window.history.pushState({}, "", `pages/pokemon-details.html?id=${id}`);
 }
 
 
@@ -330,7 +332,7 @@ function isValidPokemonId(id) {
 
 
 function redirectHome() {
-    window.location.href = '/index.html';
+    window.location.href = '../index.html';
 }
 
 
