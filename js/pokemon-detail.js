@@ -1,12 +1,13 @@
 const qs = (selector, parent = document) => parent.querySelector(selector);
 const qsa = (selector, parent = document) => parent.querySelectorAll(selector);
 
+
 const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
 const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/'; //1051 total pokemon
 const POKEMON_ARTWORK_API = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
 const POKEMON_CRY = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/`;
 const MAX_POKEMON = 1051;
-// let currentcurrentId = null;
+
 
 const typeColors = {
     normal: '#A8A878',
@@ -29,6 +30,7 @@ const typeColors = {
     // dark: '#EE99AC'
 };
 
+
 const statNameMapping = {
     hp: "HP",
     attack: "ATK",
@@ -38,19 +40,6 @@ const statNameMapping = {
     speed: 'SPD',
 };
 
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     const currentId = new URLSearchParams(window.location.search).get('id'); // fixed was passing id when i needed the full name pokemonI
-//     const id = parseInt(currentId, 10);
-
-//     if (id < 1 || id > MAX_POKEMON) {
-//         window.location.href = '/index.html';
-//         return;
-//     }
-
-//     currentId = id;
-//     loadPokemonData(id);
-// });
 
 function rgbFromHex(hexColor) {
     const r = parseInt(hexColor.slice(1, 3), 16);
@@ -183,6 +172,7 @@ function getEnglishFlavorText(pokemonSpeciesData) {
     return entry ? entry.flavor_text.replace(/\f/g, ' ') : '';
 }
 
+
 function applyTypeBackgroundColor(pokemonData) {
     const mainType = pokemonData.types[0].type.name;
     const color = typeColors[mainType];
@@ -216,6 +206,7 @@ function applyTypeBackgroundColor(pokemonData) {
     const rgbaColor = rgbFromHex(color);
     injectProgressBarStyles(rgbaColor, color);
 }
+
 
 function injectProgressBarStyles(rgbaColor, color) {
     const styleTag = document.createElement('style');
@@ -257,151 +248,6 @@ function setupArrows(currentId) {
     }
 }
 
-// function displayPokemonDetails(pokemon) {
-//     // const { name, id, types, weight, height, abilities, stats } = pokemon;
-//     // const capitalizePokemonName = capitalizeFirstLetter(name);
-
-//     // document.querySelector('title').textContent = capitalizePokemonName;
-
-//     // const detailMainElement = document.querySelector('.detail-main');
-//     // detailMainElement.classList.add(name.toLowerCase());
-
-//     // document.querySelector('.name-wrap .name').textContent = capitalizePokemonName;
-//     // document.querySelector('.pokemon-id-wrap .body2-fonts').textContent = `#${String(id).padStart(3, '0')}`;
-
-//     // const imageElement = document.querySelector('.detail-img-wrapper img');
-//     // imageElement.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
-
-//     // const typeWrapper = document.querySelector('.power-wrapper');
-//     // typeWrapper.innerHTML = '';
-//     // types.forEach(({ type }) => {
-//     //     createAndAppendElement(typeWrapper, 'p', {
-//     //         className: `body3-fonts type ${type.name}`,
-//     //         textContent: capitalizeFirstLetter(type.name)
-//     //     });
-//     // });
-
-//     // document.querySelector('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.weight').textContent = `${weight / 10} kg`;
-//     // document.querySelector('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.height').textContent = `${height / 10} m`;
-
-//     // const abilitiesWrapper = document.querySelector('.pokemon-detail-wrap .pokemon-detail.move');
-//     // abilities.forEach(({ ability }) => {
-//     //     createAndAppendElement(abilitiesWrapper, 'p', {
-//     //         className: 'body3-fonts',
-//     //         textContent: capitalizeFirstLetter(ability.name)
-//     //     });
-//     // });
-//     // const statsWrapper = document.querySelector('.stats-wrapper');
-//     // statsWrapper.innerHTML = '';
-
-
-//     // stats.forEach(({ base_stat, stat }) => {
-//     //     const statDiv = document.createElement('div');
-//     //     statDiv.className = 'stats-wrap';
-//     //     statsWrapper.appendChild(statDiv);
-
-//     //     createAndAppendElement(statDiv, 'p', {
-//     //         className: 'body3-fonts stats',
-//     //         textContent: statNameMapping[stat.name]
-//     //     });
-//     //     createAndAppendElement(statDiv, 'p', {
-//     //         className: 'body3-fonts',
-//     //         textContent: String(base_stat).padStart(3, '0'),
-//     //     });
-//     //     createAndAppendElement(statDiv, 'progress', {
-//     //         className: 'progress-bar',
-//     //         value: base_stat,
-//     //         max: 100,
-//     //     });
-//     // });
-
-//     // setTypeBackgroundColor(pokemon);
-// }
-
-
-
-// async function loadPokemonData(id) {
-
-//     try {
-//         const responses = await Promise.all([
-//             fetch(`${POKEMON_API}${id}`), // response[0]
-//             fetch(`${POKEMON_SPECIES_API}${id}`) // response[1]
-//         ]);
-
-//         if (!responses[0].ok || !responses[1].ok) {
-//             throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
-//         }
-
-//         const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
-
-//         // const abilityWrapper = document.querySelector(".pokemon-detail-wrap .pokemon-detail.move");
-
-//         // abilityWrapper.innerHTML = '';
-
-//         if (currentcurrentId === id) {
-//             renderPokemonDetails(pokemonData, pokemonSpecies);
-//             //const flavorText = getEnglishFlavorText(pokemonSpecies);
-//             setupNavigationButtons(id);
-//             updateHistoryUrl(id);
-//             playPokemonSound(id);
-//         }
-//         return { pokemonData, pokemonSpecies };
-
-//         document.querySelector(".body3-fonts.pokemon-description").textContent = flavorText;
-
-
-//         const [leftArrow, rightArrow] = ["#leftArrow", "#rightArrow"].map((sel) =>
-//             document.querySelector(sel)
-//         );
-//         leftArrow.removeEventListener("click", navigatePokemon);
-//         rightArrow.removeEventListener("click", navigatePokemon);
-
-//         if (id !== 1) {
-//             leftArrow.addEventListener("click", () => {
-//                 navigatePokemon(id - 1);
-//             });
-//         }
-//         if (id !== 1051) {
-//             rightArrow.addEventListener("click", () => {
-//                 navigatePokemon(id + 1);
-//             });
-//         }
-
-//         // //pushes the history of changes to the url without reloading the page 
-//         // window.history.pushState({}, "", `/pages/pokemon-details.html?id=${id}`);
-
-//         // playPokemonSound(id);
-//         // console.log("pokemonData", pokemonData);
-//         // // return true;
-
-//     } catch (error) {
-//         console.error("Failed to fetch Pokémon data:", error);
-//         // return false;
-//         return null; // maybe something else?? 
-//     }
-// }
-
-
-// function setupNavigationButtons(currentId) {
-//     const leftArrow = document.querySelector('#leftArrow');
-//     const rightArrow = document.querySelector('#rightArrow');
-
-//     // remove any existing event listeners
-//     leftArrow.replaceWith(leftArrow.cloneNode(true));
-//     rightArrow.replaceWith(rightArrow.cloneNode(true));
-
-//     const newLeftArrow = document.querySelector('#leftArrow');
-//     const newRightArrow = document.querySelector('#rightArrow');
-
-//     //conditionally add event listeners
-//     if (currentId > 1) {
-//         newLeftArrow.addEventListener('click', () => navigatePokemon(currentId - 1));
-//     }
-//     if (currentId < MAX_POKEMON) {
-//         newRightArrow.addEventListener('click', () => navigatePokemon(currentId + 1));
-//     }
-// }
-
 
 async function navigatePokemon(newId) {
     currentPokemonId = newId;
@@ -419,63 +265,6 @@ async function navigatePokemon(newId) {
 function updateHistoryUrl(id) {
     window.history.pushState({}, "", `/pages/pokemon-details.html?id=${id}`);
 }
-
-
-
-// function setElementStyles(elements, cssProperty, value) {
-//     elements.forEach(element => {
-//         element.style[cssProperty] = value;
-//     });
-// }
-
-
-
-
-
-// function setTypeBackgroundColor(pokemon) {
-//     const mainType = pokemon.types[0].type.name;
-//     const color = typeColors[mainType];
-
-//     if (!color) {
-//         console.warn(`color not defined for type: ${mainType}`);
-//         return;
-//     }
-
-//     const detailMainElement = document.querySelector('.detail-main');
-//     setElementStyles([detailMainElement], "backgroundColor", color);
-//     setElementStyles([detailMainElement], "borderColor", color);
-//     setElementStyles(document.querySelectorAll(".power-wrapper > p"), "backgroundColor", color);
-//     setElementStyles(document.querySelectorAll(".stats-wrapper p.stats"), "backgroundColor", color);
-//     setElementStyles(document.querySelectorAll(".stats-wrapper .progress-bar"), "backgroundColor", color);
-
-//     const rgbaColor = rgbaFontHex(color);
-//     const styleTag = document.createElement('style');
-
-//     styleTag.innerHTML = `
-//       .stats-wrap .progressbar::-webkit-progress-bar {
-//           background-color:(${rgbaColor}, 0.5);
-//       }
-//       .stats-wrap .progressbar::-webkit-progress-value {
-//           background-color:(${color}, 0.5);
-//       }
-//     `;
-
-//     document.head.appendChild(styleTag);
-// }
-
-
-
-
-
-// function getEnglishFlavorText(pokemonSpecies) {
-//     for (let entry of pokemonSpecies.flavor_text_entries) {
-//         if (entry.language.name === 'en') {
-//             let flavor = entry.flavor_text.replace(/\f/g, ' ');
-//             return flavor;
-//         }
-//     }
-//     return '';
-// }
 
 
 let currentCry = null; // Store reference to the active audio
@@ -534,13 +323,16 @@ function getPokemonIdFromURL() {
     return parseInt(currentId, 10);
 }
 
+
 function isValidPokemonId(id) {
     return Number.isInteger(id) && id >= 1 && id <= MAX_POKEMON;
 }
 
+
 function redirectHome() {
     window.location.href = '/index.html';
 }
+
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
