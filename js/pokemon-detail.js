@@ -330,7 +330,7 @@ function isValidPokemonId(id) {
 
 
 function redirectHome() {
-    window.location.href = 'index.html';
+    window.location.href = '/index.html';
 }
 
 
