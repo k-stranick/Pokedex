@@ -115,7 +115,7 @@ async function displayPokemon(pokemon) {
         listItem.addEventListener('click', async () => {
             const isFetched = await fetchPokemonDataBeforeRedirect(pokemonId);
             if (isFetched) {
-                window.location.href = `pages/pokemon-details.html?id=${pokemonId}`;
+                window.location.href = `./pages/pokemon-details.html?id=${pokemonId}`;
             }
         });
         listWrapper.appendChild(listItem);
