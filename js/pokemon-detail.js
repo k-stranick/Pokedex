@@ -7,8 +7,10 @@ const qsa = (selector, parent = document) => parent.querySelectorAll(selector);
 const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
 const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/'; //1051 total pokemon
 const POKEMON_ARTWORK_API = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
-const POKEMON_CRY = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/`;
+const POKEMON_CRY_LEGACY = 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/';
+const POKEMON_CRY_LATEST = 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/';
 const MAX_POKEMON = 1051;
+const BASE_URL = '/pages/pokemon-details.html';
 
 
 const typeColors = {
@@ -68,7 +70,8 @@ async function fetchPokemonData(id) {
             pokemonResponse.json(),
             speciesResponse.json()
         ]);
-
+        console.log(pokemonData);
+        console.log(pokemonSpeciesData);
         return { pokemonData, pokemonSpeciesData };
 
     } catch (error) {
@@ -265,7 +268,7 @@ async function navigatePokemon(newId) {
 
 
 function updateHistoryUrl(id) {
-    window.history.pushState({}, "", `/Pokedex/pages/pokemon-details.html?id=${id}`);
+    window.history.pushState({}, "", `${BASE_URL}?id=${id}`);
 }
 
 
@@ -273,7 +276,8 @@ let currentCry = null; // Store reference to the active audio
 
 async function playPokemonSound(id) {
     try {
-        const cryUrl = `${POKEMON_CRY}${id}.ogg`;
+        const cryUrlLegacy = `${POKEMON_CRY_LEGACY}${id}.ogg`;
+        const cryUrlLatest = `${POKEMON_CRY_LATEST}${id}.ogg`;
 
         // Stop and reset any previous sound
         if (currentCry) {
@@ -284,10 +288,17 @@ async function playPokemonSound(id) {
         }
 
         // Create new audio and play
-        currentCry = new Audio(cryUrl);
+        currentCry = new Audio(cryUrlLegacy);
         currentCry.volume = 0.5; // Adjust volume if needed
 
-        await currentCry.play(); //.catch(error => console.error("Error playing cry:", error));
+        try {
+            await currentCry.play();
+        } catch (error) {
+            console.error("Error playing cry from legacy URL, trying latest URL:", error);
+            currentCry = new Audio(cryUrlLatest);
+            currentCry.volume = 0.5; // Adjust volume if needed
+            await currentCry.play();
+        }
 
         // Clear reference when audio ends
         currentCry.onended = () => currentCry = null;
