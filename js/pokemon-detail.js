@@ -199,28 +199,28 @@ function applyTypeBackgroundColor(pokemonData) {
 
     // stats headings 
     qsa('.stats-wrapper p.stats').forEach(element => {
-        element.style.backgroundColor = color;
+        element.style.color = color;
     });
 
     // progress bars
     qsa('.stats-wrapper .progress-bar').forEach(element => {
-        element.style.backgroundColor = color;
+        element.style.color = color;
     });
 
     // Inject style for the progress bar
     const rgbaColor = rgbFromHex(color);
-    injectProgressBarStyles(rgbaColor, color);
+    injectProgressBarStyles(rgbaColor);
 }
 
 
-function injectProgressBarStyles(rgbaColor, color) {
+function injectProgressBarStyles(rgbaColor) {
     const styleTag = document.createElement('style');
     styleTag.innerHTML = `
-    .stats-wrap .progressbar::-webkit-progress-bar {
-        background-color:(${rgbaColor}, 0.5);
+    .stats-wrap .progress-bar::-webkit-progress-bar {
+        background-color:rgba(${rgbaColor}, 0.5);
     }
-    .stats-wrap .progressbar::-webkit-progress-value {
-        background-color:(${color}, 0.5);
+    .stats-wrap .progress-bar::-webkit-progress-value {
+        background-color:rgba(${rgbaColor}, 1);
     }
     `;
 
@@ -268,7 +268,9 @@ async function navigatePokemon(newId) {
 
 
 function updateHistoryUrl(id) {
-    window.history.pushState({}, "", `${BASE_URL}?id=${id}`);
+    window.location.hash = `id=${id}`;
+
+    // window.history.pushState({}, "", `${BASE_URL}?id=${id}`); // for use with server
 }
 
 
