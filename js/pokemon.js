@@ -1,4 +1,4 @@
-const MAX_POKEMON = 1051; // Number of Pokemon in the first generation (increase after working with the first generation)
+const MAX_POKEMON = 386; // Number of Pokemon in the first generation (increase after working with the first generation)
 const listWrapper = document.querySelector('.list-wrapper');
 const searchInput = document.querySelector('#search-input');
 const numberFilter = document.querySelector('#number');

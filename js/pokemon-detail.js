@@ -3,16 +3,19 @@
 const qs = (selector, parent = document) => parent.querySelector(selector);
 const qsa = (selector, parent = document) => parent.querySelectorAll(selector);
 
-
+//APIs
 const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
 const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species/'; //1051 total pokemon
 const POKEMON_ARTWORK_API = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
 const POKEMON_CRY_LEGACY = 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/';
 const POKEMON_CRY_LATEST = 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/';
-const MAX_POKEMON = 1051;
+
+const MAX_POKEMON = 386;
 const BASE_URL = '/pages/pokemon-details.html';
 
-
+/**
+ * Object mapping Pokémon types to their respective colors
+ */
 const typeColors = {
     normal: '#A8A878',
     fire: '#F08030',
@@ -34,7 +37,9 @@ const typeColors = {
     fairy: '#EE99AC'
 };
 
-
+/**
+ * Object mapping Pokémon stat names to their abbreviated form
+ */
 const statNameMapping = {
     hp: "HP",
     attack: "ATK",
@@ -44,7 +49,12 @@ const statNameMapping = {
     speed: 'SPD',
 };
 
-
+/**
+ * Returns the RGB color values from a given hex color
+ * 
+ * @param {string} hexColor 
+ * @returns 
+ */
 function rgbFromHex(hexColor) {
     const r = parseInt(hexColor.slice(1, 3), 16);
     const g = parseInt(hexColor.slice(3, 5), 16);
@@ -55,6 +65,8 @@ function rgbFromHex(hexColor) {
 
 
 async function fetchPokemonData(id) {
+    if (!id) return;
+
     try {
         const [pokemonResponse, speciesResponse] = await Promise.all([
             fetch(`${POKEMON_API}${id}`),
@@ -81,25 +93,38 @@ async function fetchPokemonData(id) {
 }
 
 
-function renderPokemonDetails(pokemonData, pokemonSpecies) {
-    if (!pokemonData || !pokemonSpecies) {
-        console.error("Missing data to render Pokémon details");
-        return;
-    }
 
-    const { name, id, types, weight, height, abilities, stats } = pokemonData;
+/*=======================================
+ * 
+ * rendering pokemon name, ID, and image
+ * 
+ *=====================================*/
+
+//helper function to update Pokemon name and ID
+
+function updatePokemonNameAndId(pokemonData) {
+    const { name, id } = pokemonData;
 
     //update document title
     document.title = capitalizeFirstLetter(name);
 
-    //name and id
+    // pokemon name
     qs('.name-wrap .name').textContent = capitalizeFirstLetter(name);
-    qs('.pokemon-id-wrap .body2-fonts').textContent = `#${String(id).padStart(3, '0')}`;
 
-    //Official Artwork
+    // pokemon id
+    qs('.pokemon-id-wrap .body2-fonts').textContent = `#${String(id).padStart(3, '0')}`;
+}
+
+function updatePokemonImage(pokemonData) {
+    const { id } = pokemonData;
+
+    //Official Artwork from PokeAPI
     const imageElement = qs('.detail-img-wrapper img');
     imageElement.src = `${POKEMON_ARTWORK_API}${id}.png`;
+}
 
+function updatePokemonType(pokemonData) {
+    const { types } = pokemonData;
     //Type of pokemon
     const typeWrapper = qs('.power-wrapper')
     typeWrapper.innerHTML = '';
@@ -109,10 +134,96 @@ function renderPokemonDetails(pokemonData, pokemonSpecies) {
             textContent: capitalizeFirstLetter(type.name)
         });
     });
+}
 
-    //weight and height TODO: convert to imperial units
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.weight').textContent = `${weight / 10} kg`;
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.height').textContent = `${height / 10} m`;
+
+/*==========================
+ *
+ * handling pokemon height
+ * 
+ *========================*/
+
+function convertDecimetersToMeters(decimeters) {
+    return decimeters / 10;
+}
+
+//helper function to convert decimeters to feet
+function convertDecimeterToFeet(decimeters) {
+    return decimeters * 0.328084;
+}
+
+function getFeetFromConversion(convertedDecimeters) {
+    return Math.floor(convertedDecimeters);
+}
+
+function getInchesFromConversion(convertedDecimeters) {
+    return Math.round((convertedDecimeters % 1) * 12);
+}
+
+function updatePokemonHeight(pokemonData) {
+    const { height } = pokemonData;
+    const decimeterToMeter = convertDecimetersToMeters(height);
+    const convertedDecimeters = convertDecimeterToFeet(height);
+    const feet = getFeetFromConversion(convertedDecimeters);
+    const inches = getInchesFromConversion(convertedDecimeters);
+
+    //height in meters
+    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.height').textContent = `${decimeterToMeter} m`;
+
+    //height in feet
+    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.height-feet').textContent = `${feet}' ${inches}"`;
+}
+
+
+/*==========================
+ *
+ * handling pokemon weight
+ * 
+ *=========================*/
+
+//helper function to convert hectograms to kilograms
+function convertHectogramToKilograms(hectograms) {
+    return hectograms / 10;
+}
+
+//helper function to convert hectograms to pounds
+function convertHectogramsToPounds(hectograms) {
+    return (hectograms / 4.536).toFixed(1);
+}
+
+
+/**
+ * Updates the weight of a given pokemon in the DOM
+ * 
+ * This function converts the weight from hectograms to both kilograms and pounds, 
+ * and updates the corresponding elements in the DOM with the converted values
+ * 
+ * @param {Object} pokemonData - The data object of a given pokemon returned from the API
+ * @param {number} pokemonData.weight - The weight of the pokemon in hectograms
+ */
+function updatePokemonWeight(pokemonData) {
+    const { weight } = pokemonData;
+    const hectogramToKilogram = convertHectogramToKilograms(weight);
+    const hectogramToPound = convertHectogramsToPounds(weight);
+
+    // weight in kilograms
+    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.weight').textContent = `${hectogramToKilogram} kg`;
+    //weight in #
+    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.weight-pounds').textContent = `${hectogramToPound} lbs`;
+}
+
+
+/**
+ * Updates the abilities of a given Pokémon in the DOM.
+ *
+ * This function updates the abilities section in the DOM by clearing any existing abilities
+ * and appending the new abilities from the provided Pokémon data.
+ *
+ * @param {Object} pokemonData - The data object containing Pokémon details.
+ * @param {Array} pokemonData.abilities - An array of ability objects for the Pokémon.
+ */
+function updatePokemonAbilities(pokemonData) {
+    const { abilities } = pokemonData;
 
     //abilities
     const abilitiesWrapper = qs('.pokemon-detail-wrap .pokemon-detail.move');
@@ -123,6 +234,21 @@ function renderPokemonDetails(pokemonData, pokemonSpecies) {
             textContent: capitalizeFirstLetter(ability.name)
         });
     });
+
+}
+
+
+/**
+ * Updates the stats of a given Pokémon in the DOM.
+ *
+ * This function updates the stats section in the DOM by clearing any existing stats
+ * and appending the new stats from the provided Pokémon data.
+ *
+ * @param {Object} pokemonData - The data object containing Pokémon details.
+ * @param {Array} pokemonData.stats - An array of stat objects for the Pokémon.
+ */
+function updatePokemonStats(pokemonData) {
+    const { stats } = pokemonData;
 
     //stats
     const statsWrapper = qs('.stats-wrapper');
@@ -146,6 +272,31 @@ function renderPokemonDetails(pokemonData, pokemonSpecies) {
             max: 100,
         });
     });
+}
+
+
+/**
+ * Renders the details of a given Pokémon in the DOM.
+ *
+ * This function updates various sections in the DOM with the provided Pokémon data,
+ * including name, image, type, height, weight, abilities, stats, and flavor text.
+ *
+ * @param {Object} pokemonData - The data object containing Pokémon details.
+ * @param {Object} pokemonSpecies - The data object containing Pokémon species details.
+ */
+function renderPokemonDetails(pokemonData, pokemonSpecies) {
+    if (!pokemonData || !pokemonSpecies) {
+        console.error("Missing data to render Pokémon details");
+        return;
+    }
+
+    updatePokemonNameAndId(pokemonData);
+    updatePokemonImage(pokemonData);
+    updatePokemonType(pokemonData);
+    updatePokemonHeight(pokemonData);
+    updatePokemonWeight(pokemonData);
+    updatePokemonAbilities(pokemonData);
+    updatePokemonStats(pokemonData);
 
     //flavor text ?? should this go here?
     qs('.body3-fonts.pokemon-description').textContent = getEnglishFlavorText(pokemonSpecies);
@@ -166,13 +317,6 @@ function createAndAppendElement(parent, tag, option = {}) {
 
 
 function getEnglishFlavorText(pokemonSpeciesData) {
-    // for (let entry of pokemonSpecies.flavor_text_entries) {
-    //     if (entry.language.name === 'en') {
-    //         let flavor = entry.flavor_text.replace(/\f/g, ' ');
-    //         return flavor;
-    //     }
-    // }
-    // return '';
     const entry = pokemonSpeciesData.flavor_text_entries.find(entry => entry.language.name === 'en');
     return entry ? entry.flavor_text.replace(/\f/g, ' ') : '';
 }
@@ -213,6 +357,15 @@ function applyTypeBackgroundColor(pokemonData) {
 }
 
 
+/**
+ * Injects custom styles for the progress bars in the stats section.
+ *
+ * This function creates a style tag with custom styles for the progress bars
+ * and appends it to the document head. The styles are based on the provided
+ * RGBA color values.
+ *
+ * @param {string} rgbaColor - The RGBA color values to be used for the progress bar styles.
+ */
 function injectProgressBarStyles(rgbaColor) {
     const styleTag = document.createElement('style');
     styleTag.innerHTML = `
@@ -225,8 +378,7 @@ function injectProgressBarStyles(rgbaColor) {
     `;
 
     document.head.appendChild(styleTag);
-
-}
+} //TODO: sizing? and why does the file version load differently than the server version????? 
 
 
 function setupArrows(currentId) {
@@ -291,14 +443,19 @@ async function playPokemonSound(id) {
 
         // Create new audio and play
         currentCry = new Audio(cryUrlLegacy);
-        currentCry.volume = 0.5; // Adjust volume if needed
+        currentCry.volume = 0.5; 
 
         try {
             await currentCry.play();
+            if(id === 5) {
+                currentCry = new Audio(cryUrlLegacy);
+                currentCry.volume = 0.5; 
+                await currentCry.play();
+            }
         } catch (error) {
             console.error("Error playing cry from legacy URL, trying latest URL:", error);
             currentCry = new Audio(cryUrlLatest);
-            currentCry.volume = 0.5; // Adjust volume if needed
+            currentCry.volume = 0.5; 
             await currentCry.play();
         }
 
@@ -309,7 +466,6 @@ async function playPokemonSound(id) {
         console.error("Failed to play Pokémon sound:", error);
     }
 }
-
 
 let currentPokemonId = null;
 
@@ -352,3 +508,38 @@ function redirectHome() {
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+
+
+/**
+ * TEST FUNCTION FOR CHARMELEON SOUND
+ */
+// function playCharSound() {
+//     const cryUrl = "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/5.ogg";
+
+//     const audio = new Audio(cryUrl);
+//     audio.volume = 0.5;
+//     audio.play().catch(error => console.error("Error playing cry:", error));
+// }
+
+//function playPokemonSound(id) {
+    //     let currentCry = null; // Store reference to the active audio
+    
+    //     try {
+    //         const cryUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/${id}.ogg`;
+    
+    //         // Stop and reset any previous sound
+    //         if (currentCry) {
+    //             currentCry.pause();
+    //             currentCry.currentTime = 0; // Reset to start
+    //         }
+    
+    //         // Create new audio and play
+    //         currentCry = new Audio(cryUrl);
+    //         currentCry.volume = 0.5; // Adjust volume if needed
+    //         currentCry.play().catch(error => console.error("Error playing cry:", error));
+    
+    //     } catch (error) {
+    //         console.error("Failed to play Pokémon sound:", error);
+    //     }
+    // }
