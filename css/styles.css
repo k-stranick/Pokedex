@@ -167,14 +167,14 @@ body {
   position: relative;
 }
 
-.search-close-icon {
+.search-clear-icon {
   position: absolute;
   right: 1rem;
   display: none;
   cursor: pointer;
 }
 
-.search-close-icon-visible {
+.search-clear-icon-visible {
   display: block;
 }
 
