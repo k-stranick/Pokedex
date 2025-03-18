@@ -1,5 +1,5 @@
 const MAX_POKEMON = 386; // Number of Pokemon in the first generation (increase after working with the first generation)
-const listWrapper = document.querySelector('.list-wrapper');
+const listWrapper = document.querySelector('.list-container');
 const searchInput = document.querySelector('#search-input');
 const numberFilter = document.querySelector('#number');
 const nameFilter = document.querySelector('#name');
@@ -101,13 +101,13 @@ async function displayPokemon(pokemon) {
         const listItem = document.createElement('div');
         listItem.className = 'list-item';
         listItem.innerHTML = `
-        <div class='number-wrap'>
+        <div class='id-container'>
             <p class="caption-fonts">#${pokemonId}</p>
         </div>      
-        <div class='img-wrap'>
+        <div class='image-container'>
             <img src=${POKEMON_IMAGE_API}/${pokemonId}.png" alt="${pokemon.name}" />
         </div>
-        <div class='name-wrap'>
+        <div class='name-container'>
             <p class="body3-fonts">${pokemon.name}</p>
         </div> 
         `;
