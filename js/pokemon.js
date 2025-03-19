@@ -70,6 +70,8 @@ function displayPokemon(pokemonList) {
     const row = document.createElement('div');
     row.className = 'row g-4';
 
+    const fragment = document.createDocumentFragment();
+
     pokemonList.forEach(pokemon => {
         const col = document.createElement('div');
         col.className = 'col-lg-3 col-md-4 col-sm-6';
@@ -87,10 +89,10 @@ function displayPokemon(pokemonList) {
             </div>
         `;
 
-        row.appendChild(col);
-
+        fragment.appendChild(col);
     });
 
+    row.appendChild(fragment);
     elements.listWrapper.appendChild(row);
 }
 
@@ -104,29 +106,34 @@ async function handleSearch() {
     }
 
     const searchTerms = searchValue.split(',').map(term => term.trim()).filter(term => term !== '');
-    let filterType = elements.numberFilter.checked ? 'number' : elements.nameFilter.checked ? 'name' : elements.typeFilter.checked ? 'type' : 'default';
-    let filteredPokemon = allPokemon;
+    let filteredPokemon = [];
 
-
-    switch (filterType) {
-        case 'number':
+    switch (true) {
+        case elements.numberFilter.checked:
             filteredPokemon = allPokemon.filter(pokemon =>
-                searchTerms.some(term => pokemon.id.toString().startsWith(term)))
+                searchTerms.some(term => pokemon.id.toString().startsWith(term))
+            );
             break;
-        case 'name':
+        case elements.nameFilter.checked:
             filteredPokemon = allPokemon.filter(pokemon =>
                 searchTerms.some(term => pokemon.name.toLowerCase().startsWith(term))
             );
             break;
-        case 'type':
-            filteredPokemon = allPokemon.filter(pokemon =>
-                searchTerms.some(term => pokemon.types.some(type => type.toLowerCase().includes(term)))
-            );
+        case elements.typeFilter.checked:
+            filteredPokemon = filterPokemonByType(searchTerms);
             break;
+        default:
+            filteredPokemon = allPokemon;
     }
 
     displayPokemon(filteredPokemon);
     elements.notFoundMessage.classList.toggle('d-none', filteredPokemon.length !== 0);
+}
+
+function filterPokemonByType(searchTerms) {
+    return allPokemon.filter(pokemon =>
+        searchTerms.some(term => pokemon.types.some(type => type.toLowerCase().includes(term)))
+    );
 }
 
 function clearSearch() {
@@ -141,11 +148,12 @@ function clearSearch() {
 function handleViewDetails(event) {
     if (event.target.classList.contains('view-details')) {
         const pokemonId = event.target.dataset.id;
-        fetchPokemonDataBeforeRedirect(pokemonId).then(isFetched => {
-            if (isFetched) {
-                window.location.href = `./pages/pokemon-details.html?id=${pokemonId}`;
-            }
-        });
+
+        // Redirect first
+        window.location.href = `./pages/pokemon-details.html?id=${pokemonId}`;
+
+        // Fetch in background for faster page load
+        fetchPokemonDataBeforeRedirect(pokemonId);
     }
 }
 

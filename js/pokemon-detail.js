@@ -378,7 +378,7 @@ function injectProgressBarStyles(rgbaColor) {
     `;
 
     document.head.appendChild(styleTag);
-} //TODO: sizing? and why does the file version load differently than the server version????? 
+} 
 
 
 function setupArrows(currentId) {
