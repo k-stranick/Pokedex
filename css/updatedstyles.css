@@ -1,0 +1,20 @@
+/* .sort-icon {
+  height: 15px;
+}
+
+.search-container,
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+}
+
+.search-bar {
+  position: relative;
+  background-color: var(--grayscale-white);
+  border-radius: 16px;
+  box-shadow: var(--drop-shadow-inner);
+  height: 32px;
+  gap: 8px;
+} */

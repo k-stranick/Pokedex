@@ -1,162 +1,158 @@
 const MAX_POKEMON = 386; // Number of Pokemon in the first generation (increase after working with the first generation)
-const listWrapper = document.querySelector('.list-wrapper');
-const searchInput = document.querySelector('#search-input');
-const numberFilter = document.querySelector('#number');
-const nameFilter = document.querySelector('#name');
-const notFoundMessage = document.querySelector('#not-found-message');
+
+const elements = {
+    listWrapper: document.querySelector('.list-container'),
+    searchInput: document.querySelector('#search-input'),
+    numberFilter: document.querySelector('#number'),
+    nameFilter: document.querySelector('#name'),
+    typeFilter: document.querySelector('#type'),
+    notFoundMessage: document.querySelector('#not-found-message'),
+    clearButton: document.querySelector('#search-clear-icon')
+};
+
+const API_URLS = {
+    POKEMON: 'https://pokeapi.co/api/v2/pokemon',
+    POKEMON_SPECIES_API: 'https://pokeapi.co/api/v2/pokemon-species',
+    POKEMON_IMAGE: 'https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork'
+};
 
 let allPokemon = []; // Array to store all Pokemon
 
 
-// const typeFilter = document.querySelector('#type-filter');
-// const searchButton = document.querySelector('#search-button');
-// const detailWrapper = document.querySelector('.detail-wrapper');
+async function fetchPokemonData() {
+    try {
 
-const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon';
-const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species';
-const POKEMON_IMAGE_API = '"https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork';
+        const response = await fetch(`${API_URLS.POKEMON}?limit=${MAX_POKEMON}`);
+        if (!response.ok) throw new Error(`Failed to fetch Pokémon: ${response.statusText}`);
 
-fetch(`${POKEMON_API}?limit=${MAX_POKEMON}`)
-    .then(response => response.json())
-    .then(data => {
-        allPokemon = data.results;
+
+        const data = await response.json();
+
+
+        allPokemon = await Promise.all(data.results.map(async (pokemon) => {
+            const detailsResponse = await fetch(pokemon.url);
+            if (!detailsResponse.ok) throw new Error(`Failed to fetch details for ${pokemon.name}`);
+
+            const details = await detailsResponse.json();
+            return {
+                name: details.name,
+                id: details.id,
+                types: details.types.map(t => t.type.name),
+                image: `${API_URLS.POKEMON_IMAGE}/${details.id}.png`
+            };
+        }));
+
         displayPokemon(allPokemon);
-    });
 
-
-
-// /**
-//  * Fetch Pokémon data before redirecting to the details page
-//  * @param {number} id - Pokémon ID
-//  * @returns {Object|null} - Pokémon data if fetched successfully, null otherwise
-//  */
-// async function fetchPokemonDataBeforeRedirect(id) {
-//     //     try {
-//     //         const responses = await Promise.all([
-//     //             fetch(`${POKEMON_API}${id}`),
-//     //             fetch(`${POKEMON_SPECIES_API}${id}`)
-//     //         ]);
-
-//     //         if (!responses[0].ok || !responses[1].ok) {
-//     //             throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
-//     //         }
-
-//     //         const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
-
-//     //         return { pokemonData, pokemonSpecies };
-
-//     //     } catch (error) {
-//     //         console.error(`Failed to fetch Pokémon before redirect: ${error.message}`);
-//     //         return null;
-//     //     }
-
-//     try {
-//         const [pokemon, pokemonSpecies] = await Promise.all([
-//             fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
-
-//             fetch(`${POKEMON_SPECIES_API}/${id}`).then(response => response.json())
-//         ]);
-//         return true;
-//     } catch (error) {
-//         console.error(`Failed to fetch Pokémon data: ${error}`);;
-//     }
-// }
+    } catch (error) {
+        console.error('Error fetching Pokémon:', error);
+        elements.notFoundMessage.textContent = 'Failed to load Pokémon data';
+        elements.notFoundMessage.classList.remove('d-none');
+    }
+}
 
 
 async function fetchPokemonDataBeforeRedirect(id) {
     try {
-        const responses = await Promise.all([
-            fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
-            fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
-        ]);
-        return {
-            pokemonData: responses[0],
-            pokemonSpecies: responses[1],
-        };
+        const response = await fetch(`${API_URLS.POKEMON}/${id}`);
+        if (!response.ok) throw new Error(`Failed to fetch data for Pokémon ID ${id}`);
+        return await response.json();
     } catch (error) {
         console.error(`Failed to fetch Pokémon data: ${error}`);
         return null;
     }
 }
 
-// /**
-//  * 
-//  * @param {*} pokemonList 
-//  */
-// async function displayPokemon(pokemonList) {
-//     listWrapper.innerHTML = '';
-//     pokemonList.forEach((pokemon, index) => {
-//         const listItem = document.createElement('li');
-//         listItem.textContent = pokemon.name;
-//         listItem.dataset.index = index;
-//         listWrapper.appendChild(listItem);
-//     });
-// }
 
-async function displayPokemon(pokemon) {
-    listWrapper.innerHTML = '';
+function displayPokemon(pokemonList) {
+    elements.listWrapper.innerHTML = '';
 
-    pokemon.forEach(pokemon => {
-        const pokemonId = pokemon.url.split('/')[6];
-        const listItem = document.createElement('div');
-        listItem.className = 'list-item';
-        listItem.innerHTML = `
-        <div class='number-wrap'>
-            <p class="caption-fonts">#${pokemonId}</p>
-        </div>      
-        <div class='img-wrap'>
-            <img src=${POKEMON_IMAGE_API}/${pokemonId}.png" alt="${pokemon.name}" />
-        </div>
-        <div class='name-wrap'>
-            <p class="body3-fonts">${pokemon.name}</p>
-        </div> 
+    const row = document.createElement('div');
+    row.className = 'row g-4';
+
+    pokemonList.forEach(pokemon => {
+        const col = document.createElement('div');
+        col.className = 'col-lg-3 col-md-4 col-sm-6';
+
+        col.innerHTML = `
+            <div class="card shadow border-0 text-center">
+                <div class="card-header bg-danger text-white fw-bold">
+                    #${pokemon.id}
+                </div>
+                <img src='${pokemon.image}' class="card-img-top p-3" alt="${pokemon.name}">
+                <div class="card-body">
+                    <h5 class="card-title text-capitalize">${pokemon.name}</h5>
+                    <button class="btn btn-danger view-details" data-id="${pokemon.id}">View Details</button>
+                </div>
+            </div>
         `;
 
-        listItem.addEventListener('click', async () => {
-            const isFetched = await fetchPokemonDataBeforeRedirect(pokemonId);
+        row.appendChild(col);
+
+    });
+
+    elements.listWrapper.appendChild(row);
+}
+
+
+async function handleSearch() {
+    const searchValue = elements.searchInput.value.toLowerCase().trim();
+    if (!searchValue) {
+        displayPokemon(allPokemon);
+        elements.notFoundMessage.classList.add('d-none');
+        return;
+    }
+
+    const searchTerms = searchValue.split(',').map(term => term.trim()).filter(term => term !== '');
+    let filterType = elements.numberFilter.checked ? 'number' : elements.nameFilter.checked ? 'name' : elements.typeFilter.checked ? 'type' : 'default';
+    let filteredPokemon = allPokemon;
+
+
+    switch (filterType) {
+        case 'number':
+            filteredPokemon = allPokemon.filter(pokemon =>
+                searchTerms.some(term => pokemon.id.toString().startsWith(term)))
+            break;
+        case 'name':
+            filteredPokemon = allPokemon.filter(pokemon =>
+                searchTerms.some(term => pokemon.name.toLowerCase().startsWith(term))
+            );
+            break;
+        case 'type':
+            filteredPokemon = allPokemon.filter(pokemon =>
+                searchTerms.some(term => pokemon.types.some(type => type.toLowerCase().includes(term)))
+            );
+            break;
+    }
+
+    displayPokemon(filteredPokemon);
+    elements.notFoundMessage.classList.toggle('d-none', filteredPokemon.length !== 0);
+}
+
+function clearSearch() {
+    elements.searchInput.value = '';
+    displayPokemon(allPokemon);
+    elements.notFoundMessage.classList.add('d-none');
+}
+
+/**
+ * Handles clicking the "View Details" button using event delegation
+ */
+function handleViewDetails(event) {
+    if (event.target.classList.contains('view-details')) {
+        const pokemonId = event.target.dataset.id;
+        fetchPokemonDataBeforeRedirect(pokemonId).then(isFetched => {
             if (isFetched) {
                 window.location.href = `./pages/pokemon-details.html?id=${pokemonId}`;
             }
         });
-        listWrapper.appendChild(listItem);
-    });
-}
-
-
-searchInput.addEventListener("keyup", handleSearch);
-
-
-function handleSearch() {
-    const searchValue = searchInput.value.toLowerCase().trim();
-    let filteredPokemon;
-
-    if (!searchValue) {
-        displayPokemon(allPokemon);
-        return;
     }
-
-    if (numberFilter.checked) {
-        filteredPokemon = allPokemon.filter(pokemon => {
-            const pokemonId = pokemon.url.split('/')[6];
-            return pokemonId.startsWith(searchValue);
-        });
-    } else if (nameFilter.checked) {
-        filteredPokemon = allPokemon.filter(pokemon => pokemon.name.toLowerCase().startsWith(searchValue));
-    } else {
-        filteredPokemon = allPokemon;
-    }
-
-    displayPokemon(filteredPokemon);
-
-    notFoundMessage.style.display = filteredPokemon.length === 0 ? 'block' : 'none';
-
-
 }
 
-const clearButton = document.querySelector('#search-clear-icon');
-clearButton.addEventListener('click', clearSearch); // Clear search input
-function clearSearch() {
-    searchInput.value = '';
-    displayPokemon(allPokemon);
-    notFoundMessage.style.display = 'none';
-}
+// Event Listeners
+elements.searchInput.addEventListener("keyup", handleSearch);
+elements.clearButton.addEventListener("click", clearSearch);
+elements.listWrapper.addEventListener("click", handleViewDetails);
+
+// Initialize Pokémon data
+fetchPokemonData();
