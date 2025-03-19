@@ -1,4 +1,31 @@
-//pokemon-details.js
+/**
+ * @fileoverview
+ * This module manages fetching data from the PokeAPI and rendering a detailed view
+ * of a single Pokémon. It handles appearance, stats, navigation, and audio playback:
+ * 
+ * - **Data Fetching**: Retrieves Pokémon details (basic stats, types, abilities) and
+ *   species data (flavor text).
+ * 
+ * - **Rendering**: Updates DOM elements such as Pokémon name, types, stats, height,
+ *   weight, and flavor text. Dynamically applies coloring based on main Pokémon type.
+ * 
+ * - **Navigation**: Provides arrow-based navigation (left/right) to move between
+ *   different Pokémon using their IDs.
+ * 
+ * - **Audio Playback**: Fetches and plays a Pokémon's cry via the provided legacy or
+ *   latest cry URLs, handling any playback errors.
+ * 
+ * - **Helpers**: Converts units (meters, feet, kilograms, pounds) and capitalizes
+ *   text. Injects custom styles for progress bars.
+ * - **Initialization**: On DOMContentLoaded, checks Pokémon ID validity, fetches and
+ *   renders data, sets up arrow navigation, and plays the Pokémon sound.
+ * 
+ * The code assumes the presence of specific DOM elements with known selectors,
+ * inserts them into the document, and modifies style attributes as needed.
+ * 
+ * For more granular usage, each function includes a JSDoc comment detailing its
+ * parameters, return values, and side effects.
+ */
 
 const qs = (selector, parent = document) => parent.querySelector(selector);
 const qsa = (selector, parent = document) => parent.querySelectorAll(selector);
