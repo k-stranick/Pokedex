@@ -14,7 +14,7 @@ let allPokemon = []; // Array to store all Pokemon
 
 const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon';
 const POKEMON_SPECIES_API = 'https://pokeapi.co/api/v2/pokemon-species';
-const POKEMON_IMAGE_API = '"https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork';
+const POKEMON_IMAGE_API = 'https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/official-artwork';
 
 fetch(`${POKEMON_API}?limit=${MAX_POKEMON}`)
     .then(response => response.json())
@@ -22,45 +22,6 @@ fetch(`${POKEMON_API}?limit=${MAX_POKEMON}`)
         allPokemon = data.results;
         displayPokemon(allPokemon);
     });
-
-
-
-// /**
-//  * Fetch Pokémon data before redirecting to the details page
-//  * @param {number} id - Pokémon ID
-//  * @returns {Object|null} - Pokémon data if fetched successfully, null otherwise
-//  */
-// async function fetchPokemonDataBeforeRedirect(id) {
-//     //     try {
-//     //         const responses = await Promise.all([
-//     //             fetch(`${POKEMON_API}${id}`),
-//     //             fetch(`${POKEMON_SPECIES_API}${id}`)
-//     //         ]);
-
-//     //         if (!responses[0].ok || !responses[1].ok) {
-//     //             throw new Error(`HTTP error! Status: ${responses[0].status}, ${responses[1].status}`);
-//     //         }
-
-//     //         const [pokemonData, pokemonSpecies] = await Promise.all(responses.map(res => res.json()));
-
-//     //         return { pokemonData, pokemonSpecies };
-
-//     //     } catch (error) {
-//     //         console.error(`Failed to fetch Pokémon before redirect: ${error.message}`);
-//     //         return null;
-//     //     }
-
-//     try {
-//         const [pokemon, pokemonSpecies] = await Promise.all([
-//             fetch(`${POKEMON_API}/${id}`).then(response => response.json()),
-
-//             fetch(`${POKEMON_SPECIES_API}/${id}`).then(response => response.json())
-//         ]);
-//         return true;
-//     } catch (error) {
-//         console.error(`Failed to fetch Pokémon data: ${error}`);;
-//     }
-// }
 
 
 async function fetchPokemonDataBeforeRedirect(id) {
@@ -79,49 +40,46 @@ async function fetchPokemonDataBeforeRedirect(id) {
     }
 }
 
-// /**
-//  * 
-//  * @param {*} pokemonList 
-//  */
-// async function displayPokemon(pokemonList) {
-//     listWrapper.innerHTML = '';
-//     pokemonList.forEach((pokemon, index) => {
-//         const listItem = document.createElement('li');
-//         listItem.textContent = pokemon.name;
-//         listItem.dataset.index = index;
-//         listWrapper.appendChild(listItem);
-//     });
-// }
 
 async function displayPokemon(pokemon) {
     listWrapper.innerHTML = '';
 
+    // Create a Bootstrap row for responsive layout
+    const row = document.createElement('div');
+    row.className = 'row g-4'; // g-4 adds spacing between cards
+
     pokemon.forEach(pokemon => {
         const pokemonId = pokemon.url.split('/')[6];
-        const listItem = document.createElement('div');
-        listItem.className = 'list-item';
-        listItem.innerHTML = `
-        <div class='id-container'>
-            <p class="caption-fonts">#${pokemonId}</p>
-        </div>      
-        <div class='image-container'>
-            <img src=${POKEMON_IMAGE_API}/${pokemonId}.png" alt="${pokemon.name}" />
-        </div>
-        <div class='name-container'>
-            <p class="body3-fonts">${pokemon.name}</p>
-        </div> 
+
+        const col = document.createElement('div');
+        col.className = 'col-lg-3 col-md-4 col-sm-6'; // 4 columns on large screens, 3 on medium, 2 on small
+
+        col.innerHTML = `
+            <div class="card shadow border-0 text-center">
+                <div class="card-header bg-danger text-white fw-bold">
+                    #${pokemonId}
+                </div>
+                <img src='${POKEMON_IMAGE_API}/${pokemonId}.png' class="card-img-top p-3" alt="${pokemon.name}">
+                <div class="card-body">
+                    <h5 class="card-title text-capitalize">${pokemon.name}</h5>
+                    <button class="btn btn-danger view-details" data-id="${pokemonId}">View Details</button>
+                </div>
+            </div>
         `;
 
-        listItem.addEventListener('click', async () => {
+        // Add event listener for clicking "View Details"
+        col.querySelector('.view-details').addEventListener('click', async () => {
             const isFetched = await fetchPokemonDataBeforeRedirect(pokemonId);
             if (isFetched) {
                 window.location.href = `./pages/pokemon-details.html?id=${pokemonId}`;
             }
         });
-        listWrapper.appendChild(listItem);
-    });
-}
 
+        row.appendChild(col);
+    });
+
+    listWrapper.appendChild(row);
+}
 
 searchInput.addEventListener("keyup", handleSearch);
 
@@ -132,6 +90,7 @@ function handleSearch() {
 
     if (!searchValue) {
         displayPokemon(allPokemon);
+        notFoundMessage.classList.add('d-none');
         return;
     }
 
@@ -148,7 +107,7 @@ function handleSearch() {
 
     displayPokemon(filteredPokemon);
 
-    notFoundMessage.style.display = filteredPokemon.length === 0 ? 'block' : 'none';
+    notFoundMessage.classList.toggle('d-none', filteredPokemon.length !== 0);
 
 
 }
