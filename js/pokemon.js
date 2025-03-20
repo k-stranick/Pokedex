@@ -150,7 +150,7 @@ function handleViewDetails(event) {
         const pokemonId = event.target.dataset.id;
 
         // Redirect first
-        window.location.href = `./pages/pokemon-details.html?id=${pokemonId}`;
+        window.location.href = `./pages/test.html?id=${pokemonId}`;
 
         // Fetch in background for faster page load
         fetchPokemonDataBeforeRedirect(pokemonId);

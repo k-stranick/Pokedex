@@ -146,7 +146,7 @@ function updatePokemonImage(pokemonData) {
     const { id } = pokemonData;
 
     //Official Artwork from PokeAPI
-    const imageElement = qs('.detail-img-wrapper img');
+    const imageElement = qs('.pokemon-image');
     imageElement.src = `${POKEMON_ARTWORK_API}${id}.png`;
 }
 
@@ -170,26 +170,6 @@ function updatePokemonType(pokemonData) {
  * 
  *========================*/
 
-/**
- * Updates the height of a given Pokémon in the DOM.
- * Converts the height from decimeters to both meters and feet, then updates the corresponding elements in the DOM with the converted values.
- * 
- * @param {Object} pokemonData 
- */
-function updatePokemonHeight(pokemonData) {
-    const { height } = pokemonData;
-    const decimeterToMeter = convertDecimetersToMeters(height);
-    const convertedDecimeters = convertDecimeterToFeet(height);
-    const feet = getFeetFromConversion(convertedDecimeters);
-    const inches = getInchesFromConversion(convertedDecimeters);
-
-    //height in meters
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.height').textContent = `${decimeterToMeter} m`;
-
-    //height in feet
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.height-feet').textContent = `${feet}' ${inches}"`;
-}
-
 function convertDecimetersToMeters(decimeters) {
     return decimeters / 10;
 }
@@ -207,12 +187,37 @@ function getInchesFromConversion(convertedDecimeters) {
     return Math.round((convertedDecimeters % 1) * 12);
 }
 
+function updatePokemonHeight(pokemonData) {
+    const { height } = pokemonData;
+    const decimeterToMeter = convertDecimetersToMeters(height);
+    const convertedDecimeters = convertDecimeterToFeet(height);
+    const feet = getFeetFromConversion(convertedDecimeters);
+    const inches = getInchesFromConversion(convertedDecimeters);
+
+    //height in meters
+    qs('.pokemon-detail-wrap .pokemon-detail p.height-meter').textContent = `${decimeterToMeter} m`;
+
+    //height in feet
+    qs('.pokemon-detail-wrap .pokemon-detail p.height-feet').textContent = `${feet}' ${inches}"`;
+}
+
 
 /*==========================
  *
  * handling pokemon weight
  * 
  *=========================*/
+
+//helper function to convert hectograms to kilograms
+function convertHectogramToKilograms(hectograms) {
+    return hectograms / 10;
+}
+
+//helper function to convert hectograms to pounds
+function convertHectogramsToPounds(hectograms) {
+    return (hectograms / 4.536).toFixed(1);
+}
+
 
 /**
  * Updates the weight of a given pokemon in the DOM
@@ -229,20 +234,9 @@ function updatePokemonWeight(pokemonData) {
     const hectogramToPound = convertHectogramsToPounds(weight);
 
     // weight in kilograms
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.weight').textContent = `${hectogramToKilogram} kg`;
+    qs('.pokemon-detail-wrap .pokemon-detail p.weight-kg').textContent = `${hectogramToKilogram} kg`;
     //weight in #
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.weight-pounds').textContent = `${hectogramToPound} lbs`;
-}
-
-
-//helper function to convert hectograms to kilograms
-function convertHectogramToKilograms(hectograms) {
-    return hectograms / 10;
-}
-
-//helper function to convert hectograms to pounds
-function convertHectogramsToPounds(hectograms) {
-    return (hectograms / 4.536).toFixed(1);
+    qs('.pokemon-detail-wrap .pokemon-detail p.weight-pounds').textContent = `${hectogramToPound} lbs`;
 }
 
 
@@ -282,13 +276,13 @@ function updatePokemonAbilities(pokemonData) {
  */
 function updatePokemonStats(pokemonData) {
     const { stats } = pokemonData;
+
+    //stats
     const statsWrapper = qs('.stats-wrapper');
-
     statsWrapper.innerHTML = '';
-
     stats.forEach(({ base_stat, stat }) => {
         const statDiv = document.createElement('div');
-        statDiv.className = 'stat-item d-flex align-items-center justify-content-between mb-2';
+        statDiv.className = 'stats-wrap';
         statsWrapper.appendChild(statDiv);
 
         createAndAppendElement(statDiv, 'p', {

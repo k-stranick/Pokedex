@@ -54,10 +54,6 @@ h4 {
   font-size: var(--subtitle3-font-size);
 }
 
-.body1-fonts {
-  font-size: var(--body1-font-size);
-}
-
 .body2-fonts {
   font-size: var(--body2-font-size);
 }
@@ -80,23 +76,16 @@ input:focus-visible {
 }
 
 body {
-  margin: 0;
-  height: 100vh;
-  width: 100vw;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
 
 .main {
-  margin: 0;
-  padding: 0;
-  background-color: var(--identity-primary);
   height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
 }
 
 .header.home {
@@ -247,82 +236,12 @@ body {
   overflow-y: auto;
 }
 
-.list-wrapper {
-  margin: 1rem 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.list-item {
-  border-radius: 8px;
-  box-shadow: var(--drop-shadow);
-  background-color: var(--grayscale-white);
-  width: 8.85rem;
-  height: 8.85rem;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.list-item .number-wrap {
-  min-height: 16px;
-  text-align: right;
-  padding: 0 8px;
-  color: var(--grayscale-medium);
-}
-
-.list-item .name-wrap {
-  border-radius: 7px;
-  background-color: var(--grayscale-background);
-  padding: 24px 8px 4px 8px;
-  color: var(--grayscale-dark);
-  margin-top: -18px;
-}
-
-.list-item .img-wrap {
-  width: 72px;
-  height: 72px;
-  margin: auto;
-}
-
-.list-item .img-wrap img {
-  width: 100%;
-  height: 100%;
-}
-
 /* detail page */
 
 .detail-main .header {
   padding: 20px 20px 24px 20px;
   position: relative;
   z-index: 2;
-}
-
-.detail-main .header-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: 15px;
-}
-
-.detail-main .header-wrap {
-  display: flex;
-  align-items: center;
-  column-gap: 8px;
-}
-
-.detail-main .back-btn-wrap {
-  max-height: 32px;
-}
-
-.detail-main .back-btn-wrap path,
-.detail-main .header-wrapper p,
-.detail-main .header-wrapper h1 {
-  fill: var(--grayscale-white);
-  color: var(--grayscale-white);
 }
 
 .detail-main .pokemon-id-wrap p {
@@ -340,19 +259,6 @@ body {
 .detail-img-wrapper img {
   width: 100%;
   height: 100%;
-}
-
-.detail-card-detail-wrapper {
-  border-radius: 8px;
-  background-color: var(--grayscale-white);
-  box-shadow: var(--drop-shadow-inner);
-  padding: 56px 20px 20px 20px;
-  margin-top: -50px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  z-index: 2;
 }
 
 .power-wrapper {
@@ -379,11 +285,6 @@ body {
 
 .list-item .name-wrap p {
   text-transform: capitalize;
-}
-
-.detail-card-detail-wrapper .about-text {
-  font-weight: var(--font-weight-bold);
-  text-align: center;
 }
 
 .pokemon-detail-wrapper {
@@ -500,11 +401,11 @@ div#not-found-message {
   font-weight: 600;
 }
 
-.arrow img {
+/* .arrow img {
   -webkit-filter: brightness(0) grayscale(1) invert(1);
   filter: brightness(0) grayscale(1) invert(1);
   width: 28px;
-}
+} */
 
 .featured-img {
   position: relative;
