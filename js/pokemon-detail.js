@@ -1,4 +1,31 @@
-//pokemon-details.js
+/**
+ * @fileoverview
+ * This module manages fetching data from the PokeAPI and rendering a detailed view
+ * of a single Pokémon. It handles appearance, stats, navigation, and audio playback:
+ * 
+ * - **Data Fetching**: Retrieves Pokémon details (basic stats, types, abilities) and
+ *   species data (flavor text).
+ * 
+ * - **Rendering**: Updates DOM elements such as Pokémon name, types, stats, height,
+ *   weight, and flavor text. Dynamically applies coloring based on main Pokémon type.
+ * 
+ * - **Navigation**: Provides arrow-based navigation (left/right) to move between
+ *   different Pokémon using their IDs.
+ * 
+ * - **Audio Playback**: Fetches and plays a Pokémon's cry via the provided legacy or
+ *   latest cry URLs, handling any playback errors.
+ * 
+ * - **Helpers**: Converts units (meters, feet, kilograms, pounds) and capitalizes
+ *   text. Injects custom styles for progress bars.
+ * - **Initialization**: On DOMContentLoaded, checks Pokémon ID validity, fetches and
+ *   renders data, sets up arrow navigation, and plays the Pokémon sound.
+ * 
+ * The code assumes the presence of specific DOM elements with known selectors,
+ * inserts them into the document, and modifies style attributes as needed.
+ * 
+ * For more granular usage, each function includes a JSDoc comment detailing its
+ * parameters, return values, and side effects.
+ */
 
 const qs = (selector, parent = document) => parent.querySelector(selector);
 const qsa = (selector, parent = document) => parent.querySelectorAll(selector);
@@ -119,14 +146,14 @@ function updatePokemonImage(pokemonData) {
     const { id } = pokemonData;
 
     //Official Artwork from PokeAPI
-    const imageElement = qs('.detail-img-wrapper img');
+    const imageElement = qs('.pokemon-image');
     imageElement.src = `${POKEMON_ARTWORK_API}${id}.png`;
 }
 
 function updatePokemonType(pokemonData) {
     const { types } = pokemonData;
     //Type of pokemon
-    const typeWrapper = qs('.power-wrapper')
+    const typeWrapper = qs('.type-wrapper')
     typeWrapper.innerHTML = '';
     types.forEach(({ type }) => {
         createAndAppendElement(typeWrapper, 'p', {
@@ -168,10 +195,10 @@ function updatePokemonHeight(pokemonData) {
     const inches = getInchesFromConversion(convertedDecimeters);
 
     //height in meters
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.height').textContent = `${decimeterToMeter} m`;
+    qs('.pokemon-detail-wrap .pokemon-detail p.height-meter').textContent = `${decimeterToMeter} m`;
 
     //height in feet
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.height-feet').textContent = `${feet}' ${inches}"`;
+    qs('.pokemon-detail-wrap .pokemon-detail p.height-feet').textContent = `${feet}' ${inches}"`;
 }
 
 
@@ -207,9 +234,9 @@ function updatePokemonWeight(pokemonData) {
     const hectogramToPound = convertHectogramsToPounds(weight);
 
     // weight in kilograms
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.weight').textContent = `${hectogramToKilogram} kg`;
+    qs('.pokemon-detail-wrap .pokemon-detail p.weight-kg').textContent = `${hectogramToKilogram} kg`;
     //weight in #
-    qs('.pokemon-detail-wrap .pokemon-detail p.body3-fonts.weight-pounds').textContent = `${hectogramToPound} lbs`;
+    qs('.pokemon-detail-wrap .pokemon-detail p.weight-pounds').textContent = `${hectogramToPound} lbs`;
 }
 
 
@@ -226,7 +253,7 @@ function updatePokemonAbilities(pokemonData) {
     const { abilities } = pokemonData;
 
     //abilities
-    const abilitiesWrapper = qs('.pokemon-detail-wrap .pokemon-detail.move');
+    const abilitiesWrapper = qs('.pokemon-detail-wrap .pokemon-detail.abilities');
     abilitiesWrapper.innerHTML = ''; // Clear old
     abilities.forEach(({ ability }) => {
         createAndAppendElement(abilitiesWrapper, 'p', {
@@ -337,7 +364,7 @@ function applyTypeBackgroundColor(pokemonData) {
     detailMainElement.style.borderColor = color;
 
     // type background color
-    qsa('.power-wrapper > p').forEach(element => {
+    qsa('.type-wrapper > p').forEach(element => {
         element.style.backgroundColor = color;
     });
 
