@@ -25,25 +25,22 @@
     </header>
 
     <main class="container mt-4">
-        <section class="bg-light d-flex justify-content-center align-items-center py-3 px-4 shadow rounded"
-            id="pokemon-selection">
-            <div class="name" id="pokemon-selection">
+        <div class="container d-flex justify-content-center">
+            <section class="bg-light d-flex align-items-center py-2 px-2 shadow rounded" id="pokemon-selection">
                 <a href="#" class="arrow left-arrow" id="leftArrow">
-                    <img src="../assets/chevron_left.svg" alt="back" />
+                    <img src="../assets/chevron_left.svg" alt="back">
                 </a>
-            </div>
-            <div class="name-wrap me-2">
-                <h1 class="name"></h1>
-            </div>
-            <div class="pokemon-id-wrap">
-                <p class="body2-fonts"></p>
-            </div>
-            <div>
-                <a href="#" class="arrow right-arrow" id="rightArrow">
-                    <img src="../assets/chevron_right.svg" alt="forward" />
+                <div class="name-wrap d-flex flex-column text-center mx-3">
+                    <h1 class="name mb-0"></h1>
+                </div>
+                <div class="pokemon-id-wrap">
+                    <p class="body2-fonts mb-0 me-1"></p>
+                </div>
+                <a href="#" class="arrow right-arrow ms-auto" id="rightArrow">
+                    <img src="../assets/chevron_right.svg" alt="forward">
                 </a>
-            </div>
-        </section>
+            </section>
+        </div>
 
         <section class="container py-4" id="pokemon-details">
             <div class="card shadow-lg border-0 rounded">
@@ -71,7 +68,7 @@
                                     <p class="caption-fonts">
                                         <img src="../assets/weight.svg" alt="Weight" /> Weight
                                     </p>
-                                    <div class="pokemon-detail">
+                                    <div class="pokemon-detail d-flex flex-column align-items-center">
                                         <p class="weight-kg fw-bold text-dark"></p>
                                         <p class="weight-pounds text-muted"></p>
                                     </div>
@@ -81,16 +78,18 @@
                                     <p class="caption-fonts">
                                         <img src="../assets/height.svg" alt="Height" class="straighten" /> Height
                                     </p>
-                                    <div class="pokemon-detail">
+                                    <div class="pokemon-detail d-flex flex-column align-items-center">
                                         <p class="height-meter fw-bold text-dark"></p>
                                         <p class="height-feet text-muted"></p>
                                     </div>
                                 </div>
-                                <!-- Move -->
-                                <p class="caption-fonts align-top ms-2">Abilities</p>
-
+                                <!-- Abilities -->
                                 <div class="pokemon-detail-wrap col-md-4 d-flex flex-column align-items-center">
-                                    <div class="pokemon-detail abilities text-dark fw-bold"></div>
+                                    <p class="caption-fonts align-top ms-2">Abilities</p>
+
+                                    <div
+                                        class="pokemon-detail abilities text-dark fw-bold d-flex flex-column align-items-center">
+                                    </div>
                                 </div>
                             </div>
                             <!-- Pokémon Description -->

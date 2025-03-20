@@ -72,154 +72,14 @@ input:focus-visible {
 }
 
 body {
-  box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
 
 .main {
-  height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.header.home {
-  width: 90%;
-}
-
-.container {
-  width: 100%;
-  margin: 0;
-}
-
-.logo-wrapper {
-  display: flex;
-  align-items: center;
-}
-
-.logo-wrapper > h1 {
-  color: var(--grayscale-white);
-}
-
-.logo-wrapper > img {
-  margin-right: 16px;
-}
-
-.search-wrapper,
-.search-wrap {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 16px;
-}
-
-.search-wrap {
-  position: relative;
-  background-color: var(--grayscale-white);
-  border-radius: 16px;
-  box-shadow: var(--drop-shadow-inner);
-  height: 32px;
-  gap: 8px;
-}
-
-.search-icon {
-  margin-left: 16px;
-}
-
-.search-wrap svg path {
-  fill: var(--identity-primary);
-}
-
-.search-wrap > input {
-  width: 60%;
-  border: none;
-}
-
-.sort-wrapper {
-  position: relative;
-}
-
-.sort-wrap {
-  background-color: var(--grayscale-white);
-  border-radius: 100%;
-  min-width: 2rem;
-  min-height: 2rem;
-  box-shadow: var(--drop-shadow-inner);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.search-clear-icon {
-  position: absolute;
-  right: 1rem;
-  display: none;
-  cursor: pointer;
-}
-
-.search-clear-icon-visible {
-  display: block;
-}
-
-.filter-wrapper {
-  position: absolute;
-  background: var(--identity-primary);
-  border: 4px solid var(--identity-primary);
-  border-top: 0;
-  border-radius: 12px;
-  padding: 0px 4px 4px 4px;
-  right: 0px;
-  box-shadow: var(--drop-shadow-hover);
-  min-width: 113px;
-  top: 40px;
-  display: none;
-  z-index: 5000;
-}
-
-.filter-wrapper-open {
-  display: block;
-}
-
-.filter-wrapper-overlay .main::before {
-  background-color: rgba(0, 0, 0, 0.4);
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 2;
-}
-
-.filter-wrapper > .body2-fonts {
-  color: var(--grayscale-white);
-  font-weight: var(--font-weight-bold);
-  padding: 16px 20px;
-}
-
-.filter-wrap {
-  background-color: var(--grayscale-white);
-  box-shadow: var(--drop-shadow-inner);
-  padding: 16px 20px;
-  border-radius: 8px;
-}
-
-.filter-wrap > div {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.filter-wrap > div:last-child {
-  margin-bottom: 0px;
-}
-
-.filter-wrap input {
-  accent-color: var(--identity-primary);
 }
 
 .pokemon-list {
@@ -273,8 +133,6 @@ body {
 /* about section */
 .pokemon-detail-wrapper {
   display: flex;
-  /* align-items: flex-end; */
-  min-height: 76px; /* why */
 }
 
 .pokemon-detail-wrapper .pokemon-detail-wrap {
@@ -361,32 +219,6 @@ body {
 
 .detail-bg path {
   fill: var(--grayscale-white);
-}
-
-/* .arrow img {
-  -webkit-filter: brightness(0) grayscale(1) invert(1);
-  filter: brightness(0) grayscale(1) invert(1);
-  width: 28px;
-} */
-
-.featured-img {
-  position: relative;
-}
-
-.featured-img a.arrow {
-  display: inline-block;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 999;
-}
-
-.featured-img a.arrow.left-arrow {
-  left: -2rem;
-}
-
-.featured-img a.arrow.right-arrow {
-  right: -2rem;
 }
 
 .detail-main.main {
