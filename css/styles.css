@@ -47,11 +47,7 @@ h2 {
 }
 
 h3 {
-  font-size: var(--subtitle2-font-size);
-}
-
-h4 {
-  font-size: var(--subtitle3-font-size);
+  font-size: var(--subtitle1-font-size);
 }
 
 .body2-fonts {
@@ -236,8 +232,7 @@ body {
   overflow-y: auto;
 }
 
-/* detail page */
-
+/*       detail page       */
 .detail-main .header {
   padding: 20px 20px 24px 20px;
   position: relative;
@@ -248,20 +243,8 @@ body {
   font-weight: var(--font-weight-bold);
 }
 
-.detail-img-wrapper {
-  width: 200px;
-  height: 200px;
-  margin: auto;
-  position: relative;
-  z-index: 3;
-}
-
-.detail-img-wrapper img {
-  width: 100%;
-  height: 100%;
-}
-
-.power-wrapper {
+/* pokemon type*/
+.type-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -269,7 +252,7 @@ body {
   gap: 16px;
 }
 
-.power-wrapper > p {
+.type-wrapper > p {
   border-radius: 10px;
   padding: 2px 8px;
   font-weight: var(--font-weight-bold);
@@ -278,7 +261,7 @@ body {
   background-color: #74cb48;
 }
 
-.pokemon-detail.move p {
+.pokemon-detail.abilities p {
   text-transform: capitalize;
   word-break: break-all;
 }
@@ -287,9 +270,11 @@ body {
   text-transform: capitalize;
 }
 
+/* about section */
 .pokemon-detail-wrapper {
   display: flex;
-  align-items: flex-end;
+  /* align-items: flex-end; */
+  min-height: 76px; /* why */
 }
 
 .pokemon-detail-wrapper .pokemon-detail-wrap {
@@ -322,28 +307,15 @@ body {
   gap: 8px;
 }
 
-.pokemon-detail-wrapper {
-  min-height: 76px;
-}
-
-.pokemon-detail.move {
+.pokemon-detail.abilities {
   flex-direction: column;
   gap: 0;
   align-items: center;
   padding: 8px 5px;
 }
 
-.pokemon-detail-wrap > .caption-fonts {
-  color: var(--grayscale-medium);
-}
-
 .pokemon-detail-wrap .straighten {
   transform: rotate(90deg);
-}
-
-.detail-card-detail-wrapper .pokemon-description {
-  color: var(--grayscale-dark);
-  text-align: center;
 }
 
 .stats-wrap {
@@ -381,24 +353,14 @@ body {
 
 .detail-bg {
   position: absolute;
-  z-index: 1;
+  z-index: -1;
   right: 8px;
   top: 8px;
-  opacity: 0.1;
+  opacity: 0.2;
 }
 
 .detail-bg path {
   fill: var(--grayscale-white);
-}
-
-div#not-found-message {
-  display: none;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 20px;
-  font-weight: 600;
 }
 
 /* .arrow img {
