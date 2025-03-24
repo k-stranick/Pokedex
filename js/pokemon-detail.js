@@ -27,7 +27,21 @@
  * parameters, return values, and side effects.
  */
 
+
+/**
+ * Returns the first element within the document that matches the specified selector.
+ * @param {string} selector - The CSS selector to match.
+ * @param {ParentNode} [parent=document] - The parent element to query within.
+ * @returns {Element} The first matching element.
+ */
 const qs = (selector, parent = document) => parent.querySelector(selector);
+
+/**
+ * Returns all elements within the document that match the specified selector.
+ * @param {string} selector - The CSS selector to match.
+ * @param {ParentNode} [parent=document] - The parent element to query within.
+ * @returns {NodeList} A NodeList of matching elements.
+ */
 const qsa = (selector, parent = document) => parent.querySelectorAll(selector);
 
 //APIs
@@ -64,6 +78,7 @@ const typeColors = {
     fairy: '#EE99AC'
 };
 
+
 /**
  * Object mapping Pokémon stat names to their abbreviated form
  */
@@ -76,11 +91,11 @@ const statNameMapping = {
     speed: 'SPD',
 };
 
+
 /**
- * Returns the RGB color values from a given hex color
- * 
- * @param {string} hexColor 
- * @returns 
+ * Returns the RGB color values from a given hex color.
+ * @param {string} hexColor - The hex color code.
+ * @returns {string} The RGB color values.
  */
 function rgbFromHex(hexColor) {
     const r = parseInt(hexColor.slice(1, 3), 16);
@@ -91,6 +106,11 @@ function rgbFromHex(hexColor) {
 }
 
 
+/**
+ * Fetches data for a specific Pokémon by its ID.
+ * @param {number} id - The ID of the Pokémon to fetch data for.
+ * @returns {Object|null} The fetched Pokémon data and species data, or null if an error occurs.
+ */
 async function fetchPokemonData(id) {
     if (!id) return;
 
@@ -120,15 +140,10 @@ async function fetchPokemonData(id) {
 }
 
 
-
-/*=======================================
- * 
- * rendering pokemon name, ID, and image
- * 
- *=====================================*/
-
-//helper function to update Pokemon name and ID
-
+/**
+ * Updates the Pokémon name and ID in the DOM.
+ * @param {Object} pokemonData - The data object containing Pokémon details.
+ */
 function updatePokemonNameAndId(pokemonData) {
     const { name, id } = pokemonData;
 
@@ -139,9 +154,14 @@ function updatePokemonNameAndId(pokemonData) {
     qs('.name-wrap .name').textContent = capitalizeFirstLetter(name);
 
     // pokemon id
-    qs('.pokemon-id-wrap .body2-fonts').textContent = `#${String(id).padStart(3, '0')}`;
+    qs('.pokemon-id-wrap .twelve-pt-fonts').textContent = `#${String(id).padStart(3, '0')}`;
 }
 
+
+/**
+ * Updates the Pokémon image in the DOM.
+ * @param {Object} pokemonData - The data object containing Pokémon details.
+ */
 function updatePokemonImage(pokemonData) {
     const { id } = pokemonData;
 
@@ -150,6 +170,11 @@ function updatePokemonImage(pokemonData) {
     imageElement.src = `${POKEMON_ARTWORK_API}${id}.png`;
 }
 
+
+/**
+ * Updates the Pokémon type in the DOM.
+ * @param {Object} pokemonData - The data object containing Pokémon details.
+ */
 function updatePokemonType(pokemonData) {
     const { types } = pokemonData;
     //Type of pokemon
@@ -164,29 +189,50 @@ function updatePokemonType(pokemonData) {
 }
 
 
-/*==========================
- *
- * handling pokemon height
- * 
- *========================*/
-
+/**
+ * Converts decimeters to meters.
+ * @param {number} decimeters - The height in decimeters.
+ * @returns {number} The height in meters.
+ */
 function convertDecimetersToMeters(decimeters) {
     return decimeters / 10;
 }
 
-//helper function to convert decimeters to feet
+
+/**
+ * Converts decimeters to feet.
+ * @param {number} decimeters - The height in decimeters.
+ * @returns {number} The height in feet.
+ */
 function convertDecimeterToFeet(decimeters) {
     return decimeters * 0.328084;
 }
 
+
+/**
+ * Returns the feet part from the converted decimeters.
+ * @param {number} convertedDecimeters - The height in feet.
+ * @returns {number} The feet part.
+ */
 function getFeetFromConversion(convertedDecimeters) {
     return Math.floor(convertedDecimeters);
 }
 
+
+/**
+ * Returns the inches part from the converted decimeters.
+ * @param {number} convertedDecimeters - The height in feet.
+ * @returns {number} The inches part.
+ */
 function getInchesFromConversion(convertedDecimeters) {
     return Math.round((convertedDecimeters % 1) * 12);
 }
 
+
+/**
+ * Updates the height of a given Pokémon in the DOM.
+ * @param {Object} pokemonData - The data object containing Pokémon details.
+ */
 function updatePokemonHeight(pokemonData) {
     const { height } = pokemonData;
     const decimeterToMeter = convertDecimetersToMeters(height);
@@ -202,18 +248,21 @@ function updatePokemonHeight(pokemonData) {
 }
 
 
-/*==========================
- *
- * handling pokemon weight
- * 
- *=========================*/
-
-//helper function to convert hectograms to kilograms
+/**
+ * Converts hectograms to kilograms.
+ * @param {number} hectograms - The weight in hectograms.
+ * @returns {number} The weight in kilograms.
+ */
 function convertHectogramToKilograms(hectograms) {
     return hectograms / 10;
 }
 
-//helper function to convert hectograms to pounds
+
+/**
+ * Converts hectograms to pounds.
+ * @param {number} hectograms - The weight in hectograms.
+ * @returns {number} The weight in pounds.
+ */
 function convertHectogramsToPounds(hectograms) {
     return (hectograms / 4.536).toFixed(1);
 }
@@ -221,7 +270,6 @@ function convertHectogramsToPounds(hectograms) {
 
 /**
  * Updates the weight of a given pokemon in the DOM
- * 
  * This function converts the weight from hectograms to both kilograms and pounds, 
  * and updates the corresponding elements in the DOM with the converted values
  * 
@@ -242,10 +290,8 @@ function updatePokemonWeight(pokemonData) {
 
 /**
  * Updates the abilities of a given Pokémon in the DOM.
- *
  * This function updates the abilities section in the DOM by clearing any existing abilities
  * and appending the new abilities from the provided Pokémon data.
- *
  * @param {Object} pokemonData - The data object containing Pokémon details.
  * @param {Array} pokemonData.abilities - An array of ability objects for the Pokémon.
  */
@@ -267,10 +313,8 @@ function updatePokemonAbilities(pokemonData) {
 
 /**
  * Updates the stats of a given Pokémon in the DOM.
- *
  * This function updates the stats section in the DOM by clearing any existing stats
  * and appending the new stats from the provided Pokémon data.
- *
  * @param {Object} pokemonData - The data object containing Pokémon details.
  * @param {Array} pokemonData.stats - An array of stat objects for the Pokémon.
  */
@@ -304,10 +348,8 @@ function updatePokemonStats(pokemonData) {
 
 /**
  * Renders the details of a given Pokémon in the DOM.
- *
  * This function updates various sections in the DOM with the provided Pokémon data,
  * including name, image, type, height, weight, abilities, stats, and flavor text.
- *
  * @param {Object} pokemonData - The data object containing Pokémon details.
  * @param {Object} pokemonSpecies - The data object containing Pokémon species details.
  */
@@ -333,6 +375,13 @@ function renderPokemonDetails(pokemonData, pokemonSpecies) {
 }
 
 
+/**
+ * Creates and appends a new element to the specified parent element.
+ * @param {Element} parent - The parent element to append the new element to.
+ * @param {string} tag - The tag name of the new element.
+ * @param {Object} [option={}] - An object containing properties to set on the new element.
+ * @returns {Element} The created element.
+ */
 function createAndAppendElement(parent, tag, option = {}) {
     const element = document.createElement(tag);
     Object.keys(option).forEach(key => {
@@ -343,12 +392,21 @@ function createAndAppendElement(parent, tag, option = {}) {
 }
 
 
+/**
+ * Retrieves the English flavor text from the Pokémon species data.
+ * @param {Object} pokemonSpeciesData - The data object containing Pokémon species details.
+ * @returns {string} The English flavor text.
+ */
 function getEnglishFlavorText(pokemonSpeciesData) {
     const entry = pokemonSpeciesData.flavor_text_entries.find(entry => entry.language.name === 'en');
     return entry ? entry.flavor_text.replace(/\f/g, ' ') : '';
 }
 
 
+/**
+ * Applies the background color based on the Pokémon's main type.
+ * @param {Object} pokemonData - The data object containing Pokémon details.
+ */
 function applyTypeBackgroundColor(pokemonData) {
     const mainType = pokemonData.types[0].type.name;
     const color = typeColors[mainType];
@@ -386,14 +444,14 @@ function applyTypeBackgroundColor(pokemonData) {
 
 /**
  * Injects custom styles for the progress bars in the stats section.
- *
  * This function creates a style tag with custom styles for the progress bars
  * and appends it to the document head. The styles are based on the provided
  * RGBA color values.
- *
  * @param {string} rgbaColor - The RGBA color values to be used for the progress bar styles.
  */
 function injectProgressBarStyles(rgbaColor) {
+    if (document.getElementById('progress-style')) return; // Skip if already injected
+
     const styleTag = document.createElement('style');
     styleTag.innerHTML = `
     .stats-wrap .progress-bar::-webkit-progress-bar {
@@ -408,6 +466,10 @@ function injectProgressBarStyles(rgbaColor) {
 } 
 
 
+/**
+ * Sets up the navigation arrows for moving between Pokémon.
+ * @param {number} currentId - The current Pokémon ID.
+ */
 function setupArrows(currentId) {
     const leftArrow = document.querySelector('#leftArrow');
     const rightArrow = document.querySelector('#rightArrow');
@@ -433,6 +495,10 @@ function setupArrows(currentId) {
 }
 
 
+/**
+ * Navigates to a new Pokémon by its ID.
+ * @param {number} newId - The new Pokémon ID to navigate to.
+ */
 async function navigatePokemon(newId) {
     currentPokemonId = newId;
     const data = await fetchPokemonData(newId);
@@ -446,6 +512,10 @@ async function navigatePokemon(newId) {
 }
 
 
+/**
+ * Updates the URL with the new Pokémon ID.
+ * @param {number} id - The new Pokémon ID.
+ */
 function updateHistoryUrl(id) {
     window.location.hash = `id=${id}`;
 
@@ -455,6 +525,10 @@ function updateHistoryUrl(id) {
 
 let currentCry = null; // Store reference to the active audio
 
+/**
+ * Plays the Pokémon sound (cry) for a given Pokémon ID.
+ * @param {number} id - The Pokémon ID.
+ */
 async function playPokemonSound(id) {
     try {
         const cryUrlLegacy = `${POKEMON_CRY_LEGACY}${id}.ogg`;
@@ -474,8 +548,8 @@ async function playPokemonSound(id) {
 
         try {
             await currentCry.play();
-            if(id === 5) {
-                currentCry = new Audio(cryUrlLegacy);
+            if(id === 5) { //This is for charmeleon since the legacy sound is broken for some reason
+                currentCry = new Audio(cryUrlLatest);
                 currentCry.volume = 0.5; 
                 await currentCry.play();
             }
@@ -498,6 +572,11 @@ let currentPokemonId = null;
 
 document.addEventListener('DOMContentLoaded', init);
 
+/**
+ * Initializes the Pokémon details page.
+ * This function is called when the DOM content is loaded. It checks the Pokémon ID validity,
+ * fetches and renders the Pokémon data, sets up arrow navigation, and plays the Pokémon sound.
+ */
 function init() {
     const pokemonId = getPokemonIdFromURL();
 
@@ -516,22 +595,38 @@ function init() {
 }
 
 
+/**
+ * Retrieves the Pokémon ID from the URL.
+ * @returns {number} The Pokémon ID.
+ */
 function getPokemonIdFromURL() {
     const currentId = new URLSearchParams(window.location.search).get('id');
     return parseInt(currentId, 10);
 }
 
-
+/**
+ * Checks if the given Pokémon ID is valid.
+ * @param {number} id - The Pokémon ID to check.
+ * @returns {boolean} True if the ID is valid, false otherwise.
+ */
 function isValidPokemonId(id) {
     return Number.isInteger(id) && id >= 1 && id <= MAX_POKEMON;
 }
 
 
+/**
+ * Redirects the user to the home page.
+ */
 function redirectHome() {
     window.location.href = '../index.html';
 }
 
 
+/**
+ * Capitalizes the first letter of a string.
+ * @param {string} string - The string to capitalize.
+ * @returns {string} The capitalized string.
+ */
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }

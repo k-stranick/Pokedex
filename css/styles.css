@@ -3,9 +3,9 @@
   --grayscale-light: #e0e0e0;
   --grayscale-white: #ffffff;
   --headline-font-size: 24px;
-  --body2-font-size: 12px;
-  --body3-font-size: 10px;
-  --caption-font-size: 8px;
+  --twelve-pt-font-size: 12px;
+  --body3-font-size: 12px;
+  --caption-font-size: 9px;
   --headline-line-height: 32px;
   --common-line-height: 16px;
   --caption-line-height: 12px;
@@ -14,7 +14,7 @@
 }
 
 h3,
-.body2-fonts,
+.twelve-pt-fonts,
 .body3-fonts {
   line-height: var(--common-line-height);
 }
@@ -28,8 +28,8 @@ h3 {
   font-size: var(--subtitle1-font-size);
 }
 
-.body2-fonts {
-  font-size: var(--body2-font-size);
+.twelve-pt-fonts {
+  font-size: var(--twelve-pt-font-size);
 }
 
 .body3-fonts {
@@ -92,10 +92,6 @@ body {
 .pokemon-detail.abilities p {
   text-transform: capitalize;
   word-break: break-all;
-}
-
-.list-item .name-wrap p {
-  text-transform: capitalize;
 }
 
 /* about section */
@@ -184,10 +180,6 @@ body {
   right: 8px;
   top: 8px;
   opacity: 0.2;
-}
-
-.detail-bg path {
-  fill: var(--grayscale-white);
 }
 
 .detail-main.main {
