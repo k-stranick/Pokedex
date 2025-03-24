@@ -21,7 +21,7 @@ const API_URLS = {
 /**
  * Initializes the page by setting up event listeners and fetching Pokémon data.
  */
-init();
+document.addEventListener("DOMContentLoaded", init);
 
 
 /**
