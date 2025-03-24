@@ -107,34 +107,34 @@ function rgbFromHex(hexColor) {
 
 
 /**
+ * Fetches JSON from a given URL, with error handling.
+ * @param {string} url - The endpoint to fetch data from.
+ * @returns {Promise<Object>} The JSON response.
+ */
+async function fetchJSON(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Fetch failed: ${url} (${res.status})`);
+    return await res.json();
+}
+
+
+/**
  * Fetches data for a specific Pokémon by its ID.
- * @param {number} id - The ID of the Pokémon to fetch data for.
- * @returns {Object|null} The fetched Pokémon data and species data, or null if an error occurs.
+ * @param {number} id - The ID of the Pokémon to fetch.
+ * @returns {Promise<{pokemonData: Object, pokemonSpeciesData: Object} | null>}
  */
 async function fetchPokemonData(id) {
-    if (!id) return;
+    if (!id) return null;
 
     try {
-        const [pokemonResponse, speciesResponse] = await Promise.all([
-            fetch(`${POKEMON_API}${id}`),
-            fetch(`${POKEMON_SPECIES_API}${id}`)
-        ]);
-
-        if (!pokemonResponse.ok || !speciesResponse.ok) {
-            throw new Error(`HTTP error! Status: ${pokemonResponse.status}, ${speciesResponse.status}`
-            );
-        }
-
         const [pokemonData, pokemonSpeciesData] = await Promise.all([
-            pokemonResponse.json(),
-            speciesResponse.json()
+            fetchJSON(`${POKEMON_API}${id}`),
+            fetchJSON(`${POKEMON_SPECIES_API}${id}`)
         ]);
-        console.log(pokemonData);
-        console.log(pokemonSpeciesData);
-        return { pokemonData, pokemonSpeciesData };
 
+        return { pokemonData, pokemonSpeciesData };
     } catch (error) {
-        console.error(`Failed to fetch Pokémon data: ${error}`);
+        console.error(`Failed to fetch Pokémon data for ID ${id}:`, error);
         return null;
     }
 }
